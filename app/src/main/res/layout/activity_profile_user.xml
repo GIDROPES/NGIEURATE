@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProfileUser">
+
+        <ScrollView
+            android:id="@+id/scrollUser"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                        <ImageView
+                            android:id="@+id/profileHat"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:src="@drawable/profile_hat" />
+
+                        <ImageView
+                            android:id="@+id/avatarUser"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="100dp"
+                            android:src="@drawable/empty_avatar" />
+
+                        <TextView
+                            android:id="@+id/nameFio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="150dp"
+                            android:layout_marginEnd="50dp"
+                            android:text="Имя Фамилия"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/groupNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/nameFio"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginEnd="50dp"
+                            android:text="Номер группы"
+                            android:textStyle="bold" />
+
+                        <Button
+                            android:id="@+id/grouppmatesBtn"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/avatarUser"
+                            android:layout_marginTop="50dp"
+                            android:layout_marginEnd="30dp"
+                            android:layout_toStartOf="@id/checkRateBtn"
+                            android:background="@drawable/button_ripped"
+                            android:text="Одногруппники"
+                            android:textColor="@color/white"
+                            android:textSize="10dp" />
+
+                        <Button
+                            android:id="@+id/checkRateBtn"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/avatarUser"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="50dp"
+                            android:background="@drawable/button_orange_ripped"
+                            android:text="Рейтинг"
+                            android:textColor="@color/black"
+                            android:textSize="10dp" />
+
+                        <TextView
+                            android:id="@+id/positionInGroup"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/grouppmatesBtn"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="20dp"
+                            android:background="@color/black"
+                            android:text="Поз. в рейт. группы: -"
+                            android:textColor="@color/white"
+                            android:textSize="22dp" />
+
+                        <TextView
+                            android:id="@+id/positionOfAll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/positionInGroup"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="20dp"
+                            android:background="@color/black"
+                            android:text="Поз. в рейт. группы: -"
+                            android:textColor="@color/white"
+                            android:textSize="22dp" />
+
+                        <TextView
+                            android:id="@+id/txtUpload"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/positionOfAll"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="50dp"
+                            android:text="Загрузить достижение"
+                            android:textColor="@color/black"
+                            android:textSize="22dp" />
+
+                        <ImageView
+                            android:id="@+id/clickToUpload"
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:layout_below="@id/txtUpload"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="20dp"
+                            android:src="@drawable/upload_image" />
+
+                        <TextView
+                            android:id="@+id/formatsTxtV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/clickToUpload"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
+                            android:text="Поддерживаемые форматы: "
+                            android:textColor="@color/black"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:id="@+id/txtWatchMyAch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/formatsTxtV"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="30dp"
+                            android:text="Просмотр достижений"
+                            android:textColor="@color/black"
+                            android:textSize="22dp" />
+
+                        <ImageView
+                            android:id="@+id/AchImage"
+                            android:layout_width="250dp"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/txtWatchMyAch"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="30dp"
+                            android:src="@drawable/xraylogo" />
+                        <Button
+                            android:id="@+id/previousImage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/button_orange_ripped"
+                            android:textColor="@color/black"
+                            android:text="Назад"
+                            android:textStyle="bold"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_below="@id/AchImage"
+                            android:layout_marginTop="5dp"
+                            />
+                        <Button
+                            android:id="@+id/nextImage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/button_orange_ripped"
+                            android:textColor="@color/black"
+                            android:text="Вперед"
+                            android:textStyle="bold"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="10dp"
+                            android:layout_below="@id/AchImage"
+                            android:layout_marginTop="5dp"
+                            />
+                        <Button
+                            android:id="@+id/watchAsList"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/button_ripped"
+                            android:textColor="@color/white"
+                            android:text="Посмотреть списком"
+                            android:textStyle="bold"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginEnd="10dp"
+                            android:layout_below="@id/nextImage"
+                            android:layout_marginTop="5dp"
+                            />
+                        <Button
+                            android:id="@+id/deleteImage"
+                            android:layout_width="40dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/button_ripped"
+                            android:textColor="@color/white"
+                            android:text="x"
+                            android:textStyle="bold"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="10dp"
+                            android:layout_below="@id/txtWatchMyAch"
+                            android:layout_marginTop="5dp"
+                            />
+                        <ImageView
+                            android:id="@+id/imageViewNgieuAtLoginPanel"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_below="@id/watchAsList"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginBottom="10dp"
+                            android:src="@drawable/ngieulogo"
+                             />
+                </RelativeLayout>
+
+        </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

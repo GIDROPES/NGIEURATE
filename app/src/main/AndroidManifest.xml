@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
         <activity
+            android:name=".ProfileUser"
+            android:exported="true" />
+        <activity
             android:name=".LoginUser"
             android:exported="true" />
         <activity
