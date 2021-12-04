@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SQLSenderConnector connector = new SQLSenderConnector();
+                connector.sendQueryCHANGING("UPDATE STUDENT_DATA SET ALL_POINTS = POINTS_FROM_ACHIEVS + POINTS_FROM_TEACHERS;");
                 Intent intent = new Intent(MainActivity.this, LoginUser.class);
                 MainActivity.this.startActivity(intent);
             }
@@ -120,5 +122,4 @@ class DelayedPrinter {
             this.offset = offset;
         }
     }
-
 }

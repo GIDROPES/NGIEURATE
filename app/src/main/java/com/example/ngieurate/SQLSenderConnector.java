@@ -97,4 +97,19 @@ public class SQLSenderConnector {
         }
         return result;
     }
+
+    public void sendQueryCHANGING(String query) {
+        connection = toOwnConnection();
+        if (connection != null) {
+            try {
+                Statement statement = connection.createStatement();
+                statement.executeQuery(query);
+
+            } catch (SQLException throwables) {
+                Log.d("CnctrSndrErr :", throwables.getMessage());
+                Log.d("CnctrSndrErr :", throwables.getLocalizedMessage());
+                throwables.printStackTrace();
+            }
+        }
+    }
 }

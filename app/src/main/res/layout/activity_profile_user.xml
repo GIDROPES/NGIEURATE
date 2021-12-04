@@ -38,13 +38,14 @@
 
                         <TextView
                             android:id="@+id/nameFio"
-                            android:layout_width="wrap_content"
+                            android:layout_width="150dp"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:layout_alignParentEnd="true"
                             android:layout_marginTop="150dp"
                             android:layout_marginEnd="50dp"
                             android:text="Имя Фамилия"
+                            android:gravity="right"
                             android:textSize="20sp" />
 
                         <TextView
@@ -113,10 +114,10 @@
                             android:id="@+id/txtUpload"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/positionOfAll"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="50dp"
+                            android:layout_below="@+id/allPoints"
+                            android:layout_marginTop="17dp"
                             android:text="Загрузить достижение"
+                            android:layout_centerHorizontal="true"
                             android:textColor="@color/black"
                             android:textSize="22dp" />
 
@@ -222,6 +223,18 @@
                             android:layout_marginBottom="10dp"
                             android:src="@drawable/ngieulogo"
                              />
+
+                        <TextView
+                            android:id="@+id/allPoints"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/positionOfAll"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="20dp"
+                            android:background="@color/ORANGE_BACKGROUND"
+                            android:text="ВСЕГО баллов: "
+                            android:textColor="@color/black"
+                            android:textSize="22dp" />
                 </RelativeLayout>
 
         </ScrollView>
