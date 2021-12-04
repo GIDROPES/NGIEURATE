@@ -44,8 +44,8 @@
                             android:layout_alignParentEnd="true"
                             android:layout_marginTop="150dp"
                             android:layout_marginEnd="50dp"
-                            android:text="Имя Фамилия"
                             android:gravity="right"
+                            android:text="Имя Фамилия"
                             android:textSize="20sp" />
 
                         <TextView
