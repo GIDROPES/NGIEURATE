@@ -8,27 +8,40 @@
         android:id="@+id/rate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="10sp"/>
+        android:background="@color/ORANGE_BACKGROUND"
+        android:textColor="@color/black"
+        android:textSize="12sp"/>
 <TextView
         android:id="@+id/empty1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="10sp"/>
+        android:textSize="15sp"/>
 
     <TextView
         android:id="@+id/fioTable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"/>
+        android:textSize="15sp"/>
+    <TextView
+        android:id="@+id/empty2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"/>
     <TextView
         android:id="@+id/grNumTable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"/>
+        android:textSize="15sp"/>
+    <TextView
+        android:id="@+id/empty3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"/>
     <TextView
         android:id="@+id/pointsTable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/ORANGE_BACKGROUND"
         android:textSize="12sp"/>
 
 </LinearLayout>

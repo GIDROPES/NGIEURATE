@@ -51,13 +51,16 @@ public class ShowTable extends AppCompatActivity {
                     while (set.next()){
                         Map<String, String> tab = new HashMap<String, String>();
                         tab.put("RATE", set.getString("RATE"));
+                        tab.put("EMPTY1","  ");
                         tab.put("FIO", set.getString("FIO"));
+                        tab.put("EMPTY2","  ");
                         tab.put("GROUP_NUMBER", set.getString("GROUP_NUMBER"));
+                        tab.put("EMPTY3","  ");
                         tab.put("ALL_POINTS", set.getString("ALL_POINTS"));
                         data.add(tab);
                     }
-                    String[] from = {"RATE","FIO","GROUP_NUMBER","ALL_POINTS"};
-                    int[] to = {R.id.rate,R.id.fioTable,R.id.grNumTable,R.id.pointsTable};
+                    String[] from = {"RATE","EMPTY1","FIO","EMPTY2","GROUP_NUMBER","EMPTY3","ALL_POINTS"};
+                    int[] to = {R.id.rate,R.id.empty1,R.id.fioTable,R.id.empty2,R.id.grNumTable,R.id.empty3,R.id.pointsTable};
                     adapter = new SimpleAdapter(ShowTable.this, data, R.layout.gridview_layout,from,to);
                     mainGridView.setAdapter(adapter);
             }
