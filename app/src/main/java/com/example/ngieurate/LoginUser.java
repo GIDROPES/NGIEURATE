@@ -14,6 +14,7 @@ import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -27,6 +28,7 @@ public class LoginUser extends AppCompatActivity {
     private EditText editLogin, editPassword;
     private Button nextBtn;
     private TextView txtNeverno;
+    private CheckBox checkBoxLogin;
 
     private String ip = "192.168.43.118", port = "1433";
     private String aClass = "net.sourceforge.jtds.jdbc.Driver";
@@ -35,6 +37,18 @@ public class LoginUser extends AppCompatActivity {
     private  String url = "jdbc:jtds:sqlserver://" + ip + ":" + port + "/" + databaseName;
 
     private Connection connection = null;
+
+    public static final String APP_PREFERENCES = "ngieustudentdata";              //название встроенного файла сохранения
+    public static final String APP_PREFERENCES_USER_FIO = "UserFio";   //ФИО по айдишнику из SQL
+    public static final String APP_PREFERENCES_USER_GROUP = "UserGroup";        //Номер группы студента
+    public static final String APP_PREFERENCES_USER_POINTS = "AllUserPoints";     //Все баллы пользователя (сумм)
+    public static final String APP_PREFERENCES_POSITION_GENERAL = "GeneralUserPosition";     //Место в общем списке
+    public static final String APP_PREFERENCES_POSITION_GROUP = "GroupUserPosition";     //Место пользователя среди группы
+    public static final String APP_PREFERENCES_CHECKBOX_CHECKED = "CheckBoxBoolean";     //True False проверка чекбокса
+    public static final String APP_PREFERENCES_OWN_LOGIN = "UserLogin";     //Логин
+    public static final String APP_PREFERENCES_OWN_PASSWORD = "UserPassword";     //Пароль
+
+    private SharedPreferences userData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +61,20 @@ public class LoginUser extends AppCompatActivity {
         txtNeverno.setVisibility(View.INVISIBLE);
         editLogin = (EditText) findViewById(R.id.EditLogin);
         editPassword = (EditText) findViewById(R.id.EditPassword);
+        checkBoxLogin = findViewById(R.id.checkBoxLogin);
+
+        userData = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
+        boolean isChecked = userData.getBoolean(APP_PREFERENCES_CHECKBOX_CHECKED, false);
+        String savedLogin = userData.getString(APP_PREFERENCES_OWN_LOGIN,"");
+        String savedPassword = userData.getString(APP_PREFERENCES_OWN_PASSWORD,"");
+
+        if (isChecked){
+            checkBoxLogin.setChecked(true);
+            editLogin.setText(savedLogin);
+            editPassword.setText(savedPassword);
+        }
+        else checkBoxLogin.setChecked(false);
+
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -61,6 +89,36 @@ public class LoginUser extends AppCompatActivity {
 
             if (String.valueOf(editPassword.getText()).equals(password)){
                 txtNeverno.setVisibility(View.INVISIBLE);
+                if (checkBoxLogin.isChecked()){
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            userData = getSharedPreferences(LoginUser.APP_PREFERENCES, MODE_PRIVATE);
+                            SharedPreferences.Editor editor = userData.edit();
+                            editor.putBoolean(LoginUser.APP_PREFERENCES_CHECKBOX_CHECKED,true);
+                            editor.apply();
+                            editor.putString(LoginUser.APP_PREFERENCES_OWN_LOGIN, String.valueOf(editLogin.getText()));
+                            editor.apply();
+                            editor.putString(LoginUser.APP_PREFERENCES_OWN_PASSWORD,String.valueOf(editPassword.getText()));
+                            editor.apply();
+                        }
+                    }.run();
+                }
+                else{
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            userData = getSharedPreferences(LoginUser.APP_PREFERENCES, MODE_PRIVATE);
+                            SharedPreferences.Editor editor = userData.edit();
+                            editor.putBoolean(LoginUser.APP_PREFERENCES_CHECKBOX_CHECKED, false);
+                            editor.apply();
+                            editor.remove(LoginUser.APP_PREFERENCES_OWN_LOGIN);
+                            editor.apply();
+                            editor.remove(LoginUser.APP_PREFERENCES_OWN_PASSWORD);
+                            editor.apply();
+                        }
+                    }.run();
+                }
                 Integer id = Integer.parseInt(sender.sendQueryToSQLgetString("SELECT [NGIEURATE].dbo.SIGNIN_DATA.ID_Of_Student FROM [NGIEURATE].dbo.SIGNIN_DATA WHERE Login = \'"+login+"\';")); //TODO:поправить тут ошибку
                 makeSave(id);
                 Intent intent = new Intent(LoginUser.this, ProfileUser.class);
@@ -80,13 +138,7 @@ public class LoginUser extends AppCompatActivity {
         private Integer points;
         private Integer position_group, position_general;
 
-        public static final String APP_PREFERENCES = "ngieustudentdata";              //название встроенного файла сохранения
-        public static final String APP_PREFERENCES_USER_FIO = "UserFio";   //ФИО по айдишнику из SQL
-        public static final String APP_PREFERENCES_USER_GROUP = "UserGroup";        //Номер группы студента
-        public static final String APP_PREFERENCES_USER_POINTS = "AllUserPoints";     //Все баллы пользователя (сумм) TODO: Написать функцию для перезаписи и перепроверки
-        public static final String APP_PREFERENCES_POSITION_GENERAL = "GeneralUserPosition";     //Место в общем списке
-        public static final String APP_PREFERENCES_POSITION_GROUP = "GroupUserPosition";     //Место пользователя среди группы
-        private SharedPreferences userData;
+
 
         public void makeSave(int id){ initializeFromSQL(id); }
 

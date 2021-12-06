@@ -23,27 +23,62 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/button_ripped"
             android:text="Назад"
             android:textColor="@color/white"
             android:textSize="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"/>
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"
-        android:background="@color/ORANGE_BACKGROUND"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:text="Добро пожаловать в общий рейтинг"
-         />
+        <Button
+            android:id="@+id/buttonUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_ripped"
+            android:text="ОБНОВИТЬ"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/helpUpdate"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="Для отображения выберите тип отображения рейтинга из выпадающего списка и нажмите кнопку Обновить"
+            android:textColor="#696969"
+            android:textSize="18sp"
+            android:layout_alignTop="@id/textView"
+            android:layout_marginTop="83dp"/>
+
+        <Spinner
+            android:id="@+id/tableSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:background="@color/ORANGE_BACKGROUND"
+            android:entries="@array/displayRating" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="70dp"
+            android:background="@color/ORANGE_BACKGROUND"
+            android:text="РЕЙТИНГ"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <GridView
             android:id="@+id/mainGrid"
@@ -51,8 +86,7 @@
             android:layout_height="550dp"
             android:layout_alignTop="@id/textView"
             android:layout_marginTop="40dp"
-            android:numColumns="1"
-            />
+            android:numColumns="1" />
 
     </RelativeLayout>
 
