@@ -153,7 +153,7 @@
                             android:textSize="22dp" />
 
                         <ImageView
-                            android:id="@+id/AchImage"
+                            android:id="@+id/images"
                             android:layout_width="250dp"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/txtWatchMyAch"
@@ -170,7 +170,7 @@
                             android:textStyle="bold"
                             android:layout_alignParentStart="true"
                             android:layout_marginStart="10dp"
-                            android:layout_below="@id/AchImage"
+                            android:layout_below="@id/images"
                             android:layout_marginTop="5dp"
                             />
                         <Button
@@ -183,22 +183,22 @@
                             android:textStyle="bold"
                             android:layout_alignParentEnd="true"
                             android:layout_marginEnd="10dp"
-                            android:layout_below="@id/AchImage"
+                            android:layout_below="@id/images"
                             android:layout_marginTop="5dp"
                             />
+
                         <Button
                             android:id="@+id/watchAsList"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/button_ripped"
-                            android:textColor="@color/white"
-                            android:text="Посмотреть списком"
-                            android:textStyle="bold"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginEnd="10dp"
                             android:layout_below="@id/nextImage"
+                            android:layout_centerHorizontal="true"
                             android:layout_marginTop="5dp"
-                            />
+                            android:layout_marginEnd="10dp"
+                            android:background="@drawable/button_ripped"
+                            android:text="Посмотреть списком"
+                            android:textColor="@color/white"
+                            android:textStyle="bold" />
                         <Button
                             android:id="@+id/deleteImage"
                             android:layout_width="40dp"
