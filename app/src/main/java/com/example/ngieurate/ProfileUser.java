@@ -5,29 +5,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.FragmentManager;
-
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.hardware.Camera;
-import android.media.Image;
 import android.os.Bundle;
-import android.util.Size;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.common.util.concurrent.ListenableFuture;
-
-import java.util.concurrent.ExecutionException;
 
 public class ProfileUser extends AppCompatActivity {
     ImageView clickToUpload, images;
@@ -38,7 +25,7 @@ public class ProfileUser extends AppCompatActivity {
     Integer posAll, posGr, allPnts;
     SharedPreferences myData;
     Button checkRateBtn;
-
+    private static final int PICKFILE_RESULT_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +96,14 @@ public class ProfileUser extends AppCompatActivity {
                     .setPositiveButton("ГАЛЕРЕЯ", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-
+                            Intent intent = new Intent();
+                            intent.setType("image/*");
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            startActivityForResult(
+                                    Intent.createChooser(
+                                            intent,
+                                            "Select Image from here..."),
+                                    PICKFILE_RESULT_CODE);
                         }
                     });
 

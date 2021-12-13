@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,9 +8,20 @@
 
     <ImageView
         android:id="@+id/AchImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
+        android:layout_width="350dp"
+        android:layout_height="500dp"
+        android:layout_centerInParent="true"
+        />
+    <Button
+        android:id="@+id/acceptImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/AchImage"
+        android:layout_marginTop="40dp"
+        android:layout_centerHorizontal="true"
+        android:text="Подтвердить"
+        android:textColor="@color/white"
+        android:background="@drawable/button_ripped"
         />
 
-</FrameLayout>
+</RelativeLayout>
