@@ -1,5 +1,7 @@
 package com.example.ngieurate;
 
+import static android.net.Uri.fromFile;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -12,45 +14,93 @@ import androidx.camera.core.ImageProxy;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Size;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.net.URI;
+import java.sql.Connection;
 import java.util.concurrent.ExecutionException;
 
 public class CameraActivity extends AppCompatActivity {
-    //private static final int PERMISSION_REQUEST_CAMERA = 83495;
-    //ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
-    //YUVtoRGB translator = new YUVtoRGB();
-    Bitmap photo;
-    ImageView achImage;
-    Button acceptImage;
-    private static final int pic_id = 123;
+
+   // private Bitmap photo;
+    private ImageView achImage;
+    private Button acceptImage;
+    private Spinner typesSpinner;
+    private TextView youWillGetPoints;
+    private SharedPreferences userData;
+    private Integer ownCounter;
+    private Integer points;
+    private static final int pic_id = 1337;
+    private Integer ownId; private String type;
+    private Uri mImageUri;
+    private File photo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+
+        readFromPreferenceNow();
+
         achImage = findViewById(R.id.AchImage);
         acceptImage = findViewById(R.id.acceptImageButton);
+        typesSpinner = findViewById(R.id.typesSpinner);
+        youWillGetPoints = findViewById(R.id.youWillGetPoints);
+
+        youWillGetPoints.setVisibility(View.INVISIBLE);
+        //код для выпадающего списка
+        ArrayAdapter<?> adapterSpinner =
+                ArrayAdapter.createFromResource(this, R.array.achievTypes,
+                        android.R.layout.simple_spinner_item);
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        typesSpinner.setAdapter(adapterSpinner);
+        typesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String selected_item = adapterView.getSelectedItem().toString();
+                setTextViewAndPoints(selected_item); //своя функция для уточнения баллов
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        //кликаем на "Подтвердить", логика только для щелчка!!!
         acceptImage.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -58,125 +108,193 @@ public class CameraActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(CameraActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PackageManager.PERMISSION_GRANTED);
                             if (ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                             ==PackageManager.PERMISSION_GRANTED) {
+
                                 //experimental
                                 BitmapDrawable drawableBitmap =  (BitmapDrawable) achImage.getDrawable();
-                                photo = drawableBitmap.getBitmap();
+                                //photo = drawableBitmap.getBitmap();
                                 //experimental
-                                createDirectoryAndSaveFile(photo,"bibibob1.jpg");
-                                
+                                //createDirectoryAndSaveFile(photo,"bibibob1.jpg");
+                                Intent intent = new Intent(CameraActivity.this, ProfileUser.class);
+                                startActivity(intent);
                             }
                             else {
                                 ActivityCompat.requestPermissions(CameraActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PackageManager.PERMISSION_GRANTED);
                             }
             }
         });
-        Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+
+        Intent camera_intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        File f = new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)+"/pic.jpg"));
+        //camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+        camera_intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+        mImageUri = Uri.fromFile(f);
         startActivityForResult(camera_intent, pic_id);
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == pic_id){
-            photo = (Bitmap)data.getExtras()
-                    .get("data");
-            achImage.setImageBitmap(photo);
-        }
-    }
-
-
-    private void createDirectoryAndSaveFile(Bitmap imageToSave, String fileName) {
-
-
-
-
-            File direct = new File(Environment.getExternalStorageDirectory() + "/NGIEURATEPIC/");
-
-            if (!direct.exists()) {
-                File wallpaperDirectory = new File(Environment.getExternalStorageDirectory()+"/NGIEURATEPIC/");
-                wallpaperDirectory.mkdirs();
-            }
-
-            File file = new File(Environment.getExternalStorageDirectory()+"/NGIEURATEPIC/",fileName);
-            if (file.exists()) {
-                file.delete();
-            }
-            try {
-                FileOutputStream out = new FileOutputStream(file);
-                imageToSave.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                out.flush();
-                out.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.d("ErrorSave", e.getMessage());
-            }
-
-
-
-    }
-    /*
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_REQUEST_CAMERA && grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            initCamera();
-        }
-    }
-    /*
-    /*
-    private void initCamera(){
-        cameraProviderFuture = ProcessCameraProvider.getInstance(this);
-        cameraProviderFuture.addListener(new Runnable() {
-            @Override
-            public void run() {
+      //  if(resultCode != RESULT_CANCELED) {
+            if (requestCode == pic_id ) { //&& resultCode == RESULT_OK
+                loadImageFromStorage(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)+"/pic.jpg") , achImage);
+                /*achImage.setImageDrawable(null);
+                achImage.destroyDrawingCache();
+                Bundle extras = data.getExtras();
+                Bitmap imagebitmap = (Bitmap) extras.get("data");
+                achImage.setImageBitmap(imagebitmap);
+                */
+                //Bitmap currentImage = (Bitmap) data.getExtras().get("data");
+                //achImage.setImageBitmap(currentImage);
+                //новый код
+                /*
                 try {
-                    ProcessCameraProvider provider = cameraProviderFuture.get();
-                    ImageAnalysis analysis = new ImageAnalysis.Builder()
-                            .setTargetResolution(new Size(1080,1920))
-                            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                            .build();
-                    CameraSelector cameraSelector = new CameraSelector.Builder()
-                            .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-                            .build();
-                    analysis.setAnalyzer(ContextCompat.getMainExecutor(CameraActivity.this),
-                            new ImageAnalysis.Analyzer() {
-                                @Override
-                                public void analyze(@NonNull ImageProxy image) {
-                                    @SuppressLint("UnsafeOptInUsageError")
-                                    Image img = image.getImage();
-                                    Bitmap bitmap = translator.translateYUV(img, CameraActivity.this);
-                                /*
-                                    int size = bitmap.getWidth() * bitmap.getHeight();
-                                    int[] pixels = new int[size];
-                                    bitmap.getPixels(pixels, 0, bitmap.getWidth(), 0, 0,
-                                            bitmap.getWidth(),bitmap.getHeight());
-                                    for(int i = 0; i < size; i++){
-                                        int color = pixels[i];
-                                        int r = color >> 16 & 0xff;
-                                        int g = color >> 8 & 0xff;
-                                        int b = color & 0xff;
-                                        int gray = (r + g + b) / 3;
-                                        pixels[i] = 0xff000000 | gray << 16 | gray << 8 | gray;
-                                    }
-                                    bitmap.setPixels(pixels, 0, bitmap.getWidth(), 0, 0,
-                                            bitmap.getWidth(),bitmap.getHeight());
+                    // place where to store camera taken picture
+                    //photo = createTemporaryFile("picture", ".jpg");
+                    //photo = createDirectoryAndSaveFile(currentImage, "hellopic.png"); //TODO: поработать над именем
+                    //mImageUri = fromFile(photo);
+                    //grabImage(achImage);
+                    //loadImageFromStorage(mImageUri.getPath(), achImage);
+                    //photo.delete();
+                } catch (Exception e) {
+                    Log.v("Err create temporary", "Can't create file to take picture!");
+                    Log.v("Err create temporary", e.getMessage());
 
-                                    achImage.setRotation(image.getImageInfo().getRotationDegrees());
-                                    achImage.setImageBitmap(bitmap);
-                                    image.close();
-                                }
-                            });
-                    provider.bindToLifecycle(CameraActivity.this,cameraSelector,analysis);
-
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Toast.makeText(CameraActivity.this, "Please check SD card! Image shot is impossible!", Toast.LENGTH_LONG);
+                    //return false;
                 }
+            */
             }
-        }, ContextCompat.getMainExecutor(this));
+     //   }
     }
-    */
+
+
+    private File createTemporaryFile(String part, String ext) throws Exception
+    {
+        File tempDir = new File(String.valueOf(Environment.getExternalStoragePublicDirectory(String.valueOf(Environment.DIRECTORY_PICTURES))));
+        if(!tempDir.exists())
+        {
+            tempDir.mkdir();
+        }
+        File img = null;
+        try {
+            img = File.createTempFile(part, ext, tempDir);
+        }
+        catch (Exception ex){
+            Log.d("temp file ERR log: ", ex.getMessage());
+        }
+
+        return img;
+    }
+
+    private void loadImageFromStorage(String path, ImageView img)
+    {
+
+        try {
+            File f=new File(path);
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            //ImageView img=(ImageView)findViewById(R.id.imgPicker);
+            img.setImageBitmap(b);
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+            Log.d("Err loading IMG", e.getMessage());
+        }
+
+    }
+
+    public void grabImage(ImageView imageView)
+    {
+
+        ContentResolver cr = this.getContentResolver();
+        this.getContentResolver().notifyChange(mImageUri, null);
+        Bitmap bitmap;
+        try
+        {
+            bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
+            imageView.setImageBitmap(bitmap);
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT).show();
+            Log.d("ERR LOADING IMG", "Failed to load", e);
+        }
+    }
+
+    private void setTextViewAndPoints(String typeAchSelected){
+        youWillGetPoints.setVisibility(View.VISIBLE);
+
+        if (typeAchSelected.equals("Благодарственное письмо")){
+            youWillGetPoints.setText("Вы получите 10 баллов");
+            points = 10;
+            type = "Благодарственное письмо";
+        }
+        if (typeAchSelected.equals("Сертификат")){
+            youWillGetPoints.setText("Вы получите 15 баллов");
+            points = 15;
+            type = "Сертификат";
+        }
+        if (typeAchSelected.equals("Грамота")){
+            youWillGetPoints.setText("Вы получите 15 баллов");
+            points = 15;
+            type = "Грамота";
+        }
+        if (typeAchSelected.equals("Диплом")){
+            youWillGetPoints.setText("Вы получите 20 баллов");
+            points = 20;
+            type = "Диплом";
+        }
+
+    }
+
+    private void readFromPreferenceNow(){
+        ((Runnable) () -> {
+            userData = getSharedPreferences(LoginUser.APP_PREFERENCES, MODE_PRIVATE);
+            ownId = userData.getInt(LoginUser.APP_PREFERENCES_OWN_ID_ACHIEV, 0);
+            ownCounter = userData.getInt(LoginUser.APP_PREFERENCES_OWN_COUNTER, 0);
+        }).run();
+    }
+
+    private File createDirectoryAndSaveFile(Bitmap imageToSave, String fileName) {
+
+        File direct = new File(Environment.getExternalStorageDirectory() + "/NGIEURATEPIC/");
+
+        if (!direct.exists()) {
+            File wallpaperDirectory = new File(Environment.getExternalStorageDirectory()+"/NGIEURATEPIC/");
+            wallpaperDirectory.mkdirs();
+        }
+
+        File file = new File(Environment.getExternalStorageDirectory()+"/NGIEURATEPIC/",fileName);
+        if (file.exists()) {
+            file.delete();
+        }
+        else{
+            file.mkdir();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            imageToSave.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("ErrorSave", e.getMessage());
+        }
+
+        return file;
+    }
+
+    private void insertImageToSql(String typeOfAch, byte[] imageToSql){
+        //TODO:не забыть получать ID
+        //TODO:реализовать назначение поинтов, а точнее их инициализацию во время выбора типа ачивки
+        //TODO:не забыть включить поинты в запрос
+        //TODO:не забыть включить личный счётчик
+
+        SQLSenderConnector senderConnector = new SQLSenderConnector();
+        senderConnector.sendQueryCHANGING("INSERT INTO ACHIEVMENTS VALUES("+ownId+",\'"+typeOfAch+"\',"+points+","+ownCounter+","+imageToSql+");");
+    }
+
 }

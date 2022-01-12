@@ -47,6 +47,14 @@ public class LoginUser extends AppCompatActivity {
     public static final String APP_PREFERENCES_CHECKBOX_CHECKED = "CheckBoxBoolean";     //True False проверка чекбокса
     public static final String APP_PREFERENCES_OWN_LOGIN = "UserLogin";     //Логин
     public static final String APP_PREFERENCES_OWN_PASSWORD = "UserPassword";     //Пароль
+    public static final String APP_PREFERENCES_OWN_COUNTER = "UserOwnCounterOfAchievments";     //ЛИЧНЫЙ СЧЕТЧИК
+    public static final String APP_PREFERENCES_OWN_ID_ACHIEV = "UserOwnIdAchiev";     //ЛИЧНЫЙ АЙДИШНИК ДЛЯ СВЯЗИ С АЧИВКАМИ
+
+    private int idAchiev, count;
+    private String FIO;
+    private String group_number;
+    private Integer points;
+    private Integer position_group, position_general;
 
     private SharedPreferences userData;
 
@@ -119,7 +127,7 @@ public class LoginUser extends AppCompatActivity {
                         }
                     }.run();
                 }
-                Integer id = Integer.parseInt(sender.sendQueryToSQLgetString("SELECT [NGIEURATE].dbo.SIGNIN_DATA.ID_Of_Student FROM [NGIEURATE].dbo.SIGNIN_DATA WHERE Login = \'"+login+"\';")); //TODO:поправить тут ошибку
+                Integer id = Integer.parseInt(sender.sendQueryToSQLgetString("SELECT [NGIEURATE].dbo.SIGNIN_DATA.ID_Of_Student FROM [NGIEURATE].dbo.SIGNIN_DATA WHERE Login = \'"+login+"\';"));
                 makeSave(id);
                 Intent intent = new Intent(LoginUser.this, ProfileUser.class);
                 startActivity(intent);
@@ -132,11 +140,7 @@ public class LoginUser extends AppCompatActivity {
 
     }
 
-        private int id;
-        private String FIO;
-        private String group_number;
-        private Integer points;
-        private Integer position_group, position_general;
+
 
 
 
@@ -153,10 +157,12 @@ public class LoginUser extends AppCompatActivity {
             position_group = Integer.parseInt(connector.sendQueryToSQLgetString ("SELECT RATE FROM("+
                     "SELECT *, ROW_NUMBER() OVER (ORDER BY ALL_POINTS DESC) AS RATE FROM STUDENT_DATA WHERE GROUP_NUMBER = \'"+group_number+"\') as RT " +
                     "WHERE ID ="+id+";"));
-            writeToPreferences(FIO, group_number, points, position_general, position_group);
+            idAchiev = Integer.parseInt(connector.sendQueryToSQLgetString("SELECT ACHIEVMENTS_ID FROM STUDENT_DATA WHERE ID=\'"+id+"\';"));
+            count = Integer.parseInt(connector.sendQueryToSQLgetString("SELECT COUNT(*) FROM ACHIEVMENTS WHERE  OWN_ID_FOR_SEARCH ="+idAchiev+";"));
+            writeToPreferences(FIO, group_number, points, position_general, position_group, idAchiev,count);
         }
 
-        private void writeToPreferences(String fio, String group,  Integer pnts, Integer pos_gen, Integer pos_gr){
+        private void writeToPreferences(String fio, String group,  Integer pnts, Integer pos_gen, Integer pos_gr,int idAchievment, int ownCount){
 
             new Runnable(){
                 @Override
@@ -172,6 +178,10 @@ public class LoginUser extends AppCompatActivity {
                     editor.putInt(APP_PREFERENCES_POSITION_GENERAL,pos_gen);
                     editor.apply();
                     editor.putInt(APP_PREFERENCES_POSITION_GROUP,pos_gr);
+                    editor.apply();
+                    editor.putInt(APP_PREFERENCES_OWN_ID_ACHIEV,idAchievment);
+                    editor.apply();
+                    editor.putInt(APP_PREFERENCES_OWN_COUNTER,ownCount);
                     editor.apply();
                 }
             }.run();

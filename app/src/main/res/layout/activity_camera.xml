@@ -8,20 +8,48 @@
 
     <ImageView
         android:id="@+id/AchImage"
-        android:layout_width="350dp"
+        android:layout_width="wrap_content"
         android:layout_height="500dp"
-        android:layout_centerInParent="true"
-        />
+        android:layout_centerInParent="true" />
+
     <Button
         android:id="@+id/acceptImageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/AchImage"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
         android:layout_marginTop="40dp"
-        android:layout_centerHorizontal="true"
-        android:text="Подтвердить"
-        android:textColor="@color/white"
         android:background="@drawable/button_ripped"
-        />
+        android:text="Подтвердить"
+        android:textColor="@color/white" />
+    <Spinner
+        android:id="@+id/typesSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/AchImage"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/button_orange_ripped"
+        android:entries="@array/achievTypes" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:text="Выберите тип достижения:"
+        android:textStyle="bold"
+        android:layout_above="@id/typesSpinner"
+        android:layout_marginBottom="15dp"/>
+    <TextView
+        android:id="@+id/youWillGetPoints"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/AchImage"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        android:text="Вы получите"/>
 
 </RelativeLayout>

@@ -5,16 +5,36 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.FragmentManager;
+
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class ProfileUser extends AppCompatActivity {
     ImageView clickToUpload, images;
@@ -25,7 +45,9 @@ public class ProfileUser extends AppCompatActivity {
     Integer posAll, posGr, allPnts;
     SharedPreferences myData;
     Button checkRateBtn;
-    private static final int PICKFILE_RESULT_CODE = 1;
+    private static final int PICKFILE_RESULT_CODE = 21;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +98,8 @@ public class ProfileUser extends AppCompatActivity {
 
     }
     public static class AskUserUploadDialog extends AppCompatDialogFragment{
+        private Bitmap bitmapFromGallery;
+        String filePath = "";
         @NonNull
         @Override
         public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -108,6 +132,48 @@ public class ProfileUser extends AppCompatActivity {
                     });
 
             return builder.create();
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode == 1)
+                if (requestCode == PICKFILE_RESULT_CODE && resultCode == Activity.RESULT_OK && data != null) {
+                    Uri path =  data.getData();
+                    try {
+                        bitmapFromGallery = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(), path);
+                        uploadImageToServer(bitmapFromGallery);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+        }
+        private void uploadImageToServer(Bitmap currentBitmap){
+            File file = new File(filePath);
+            Retrofit retrofit = RetroClient.getRetrofit();
+            RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+            MultipartBody.Part parts = MultipartBody.Part.createFormData("newimage",file.getName(),requestBody);
+            RequestBody someData = RequestBody.create(MediaType.parse("text/plain"),"Новая картинка");
+            Api api = retrofit.create(Api.class);
+            Call call = api.uploadImage(parts, someData);
+            call.enqueue(new Callback() {
+                @Override
+                public void onResponse(Call call, Response response) {
+
+                }
+
+                @Override
+                public void onFailure(Call call, Throwable t) {
+
+                }
+            });
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            currentBitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
+            byte[] imgByteArr = byteArrayOutputStream.toByteArray();
+
+            String encodedImg =  Base64.encodeToString(imgByteArr, Base64.DEFAULT);
+
         }
     }
 

@@ -16,7 +16,8 @@ public class SQLSenderConnector {
     @SuppressLint("NewApi")
     private Connection connection;
     private String
-            ip = "192.168.43.118",
+            //ip = "192.168.43.118",
+            ip = "192.168.0.5",
             port = "1433",
             dbName = "NGIEURATE",
             username = "kir",
@@ -111,5 +112,6 @@ public class SQLSenderConnector {
                 throwables.printStackTrace();
             }
         }
+
     }
 }
