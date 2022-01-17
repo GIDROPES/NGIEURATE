@@ -17,7 +17,7 @@ public class SQLSenderConnector {
     private Connection connection;
     private String
             //ip = "192.168.43.118",
-            ip = "192.168.0.5",
+            ip = "192.168.0.3",
             port = "1433",
             dbName = "NGIEURATE",
             username = "kir",
