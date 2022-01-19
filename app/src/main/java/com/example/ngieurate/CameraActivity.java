@@ -34,6 +34,7 @@ import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Random;
 
 public class CameraActivity extends AppCompatActivity {
 
@@ -272,7 +273,15 @@ public class CameraActivity extends AppCompatActivity {
         //TODO:не забыть получать ID
         //TODO:реализовать назначение поинтов, а точнее их инициализацию во время выбора типа ачивки
         //TODO:не забыть включить поинты в запрос
-
+        char[] alphabet = {'A','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+        Random random = new Random();
+        String code = String.valueOf(random.nextInt(999))
+                + String.valueOf(alphabet[random.nextInt(alphabet.length-1)])
+                + String.valueOf(alphabet[random.nextInt(alphabet.length-1)])
+                +String.valueOf(random.nextInt(999))
+                + String.valueOf(alphabet[random.nextInt(alphabet.length-1)])
+                + String.valueOf(alphabet[random.nextInt(alphabet.length-1)]);
+        //
         String myPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/pic.jpg";
         Bitmap bitmapToSql = BitmapFactory.decodeFile(myPath);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -282,11 +291,12 @@ public class CameraActivity extends AppCompatActivity {
         Connection connection = senderConnector.toOwnConnection();
         if(connection!=null){
             try {
-                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO ACHIEVMENTS VALUES(?,?,?,?)");
+                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO ACHIEVMENTS VALUES(?,?,?,?,?)");
                 preparedStatement.setInt(1, ownId);
                 preparedStatement.setString(2,typeOfAch);
                 preparedStatement.setInt(3,points);
                 preparedStatement.setBytes(4, imageToSql);
+                preparedStatement.setString(5,code);
                 preparedStatement.execute();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();

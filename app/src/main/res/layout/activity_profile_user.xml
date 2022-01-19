@@ -154,38 +154,38 @@
 
                         <ImageView
                             android:id="@+id/images"
-                            android:layout_width="250dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/txtWatchMyAch"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="30dp"
-                            android:src="@drawable/xraylogo" />
+                             />
+
                         <Button
                             android:id="@+id/previousImage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/button_orange_ripped"
-                            android:textColor="@color/black"
-                            android:text="Назад"
-                            android:textStyle="bold"
+                            android:layout_below="@id/images"
                             android:layout_alignParentStart="true"
                             android:layout_marginStart="10dp"
-                            android:layout_below="@id/images"
                             android:layout_marginTop="5dp"
-                            />
+                            android:background="@drawable/button_orange_ripped"
+                            android:text="Назад"
+                            android:textColor="@color/black"
+                            android:textStyle="bold" />
+
                         <Button
                             android:id="@+id/nextImage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/button_orange_ripped"
-                            android:textColor="@color/black"
-                            android:text="Вперед"
-                            android:textStyle="bold"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="10dp"
                             android:layout_below="@id/images"
+                            android:layout_alignParentEnd="true"
                             android:layout_marginTop="5dp"
-                            />
+                            android:layout_marginEnd="10dp"
+                            android:background="@drawable/button_orange_ripped"
+                            android:text="Вперед"
+                            android:textColor="@color/black"
+                            android:textStyle="bold" />
 
                         <Button
                             android:id="@+id/watchAsList"
@@ -199,19 +199,19 @@
                             android:text="Посмотреть списком"
                             android:textColor="@color/white"
                             android:textStyle="bold" />
+
                         <Button
                             android:id="@+id/deleteImage"
                             android:layout_width="40dp"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/button_ripped"
-                            android:textColor="@color/white"
-                            android:text="x"
-                            android:textStyle="bold"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="10dp"
                             android:layout_below="@id/txtWatchMyAch"
+                            android:layout_alignParentEnd="true"
                             android:layout_marginTop="5dp"
-                            />
+                            android:layout_marginEnd="10dp"
+                            android:background="@drawable/button_ripped"
+                            android:text="x"
+                            android:textColor="@color/white"
+                            android:textStyle="bold" />
                         <ImageView
                             android:id="@+id/imageViewNgieuAtLoginPanel"
                             android:layout_width="80dp"

@@ -12,29 +12,24 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 public class ProfileUser extends AppCompatActivity {
     ImageView clickToUpload, images;
@@ -44,9 +39,13 @@ public class ProfileUser extends AppCompatActivity {
     String fio, grNum;
     Integer posAll, posGr, allPnts;
     SharedPreferences myData;
-    Button checkRateBtn;
+    private Button checkRateBtn, nextBtn, prevBtn, deleteImageBtn;
+    private int ownId;
+    private int arrayIterator = 0;
+    private ArrayList<byte[]> imageList;
+    private ArrayList<String> ownImgCodes;
+    private ArrayList<Integer> pointsList;
     private static final int PICKFILE_RESULT_CODE = 21;
-
 
 
     @Override
@@ -57,8 +56,11 @@ public class ProfileUser extends AppCompatActivity {
 
 
         //сопоставляем кнопочки и другие нажималки
+        nextBtn = findViewById(R.id.nextImage);
+        prevBtn = findViewById(R.id.previousImage);
         checkRateBtn = findViewById(R.id.checkRateBtn);
         clickToUpload =  findViewById(R.id.clickToUpload);
+        deleteImageBtn = findViewById(R.id.deleteImage);
         images = findViewById(R.id.images);
         //сопоставляем текстовые штуки
         nameFio = findViewById(R.id.nameFio);
@@ -91,12 +93,89 @@ public class ProfileUser extends AppCompatActivity {
         posAll = myData.getInt(LoginUser.APP_PREFERENCES_POSITION_GENERAL, 0);
         posGr = myData.getInt(LoginUser.APP_PREFERENCES_POSITION_GROUP,0);
         allPnts = myData.getInt(LoginUser.APP_PREFERENCES_USER_POINTS, 0);
+        ownId = myData.getInt(LoginUser.APP_PREFERENCES_OWN_ID_ACHIEV,0);
         //работа с вьюшками
         nameFio.setText(fio); groupNumber.setText(grNum);
         allPoints.setText("ВСЕГО баллов: " + String.valueOf(allPnts));
         positionOfAll.setText("Поз. в общем рейтинге: "+  String.valueOf(posAll)); positionInGroup.setText("Поз. в рейтинге группы: "+ String.valueOf(posGr));
 
+        imageList = fillArrayImages(ownId);
+        ownImgCodes = getImageCodes(ownId);
+        pointsList = getPointsImage(ownId);
+
+        byte[] temporaryArrayBytes = imageList.get(0);
+        Bitmap achievBitmap = BitmapFactory.decodeByteArray(temporaryArrayBytes, 0, temporaryArrayBytes.length);
+        images.setImageBitmap(achievBitmap);
+
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                photoViewer(true);
+            }
+        });
+
+        prevBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                photoViewer(false);
+            }
+        });
+
+        deleteImageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                AskUserDeleteDialog deleter = new AskUserDeleteDialog(ownImgCodes.get(arrayIterator));
+                deleter.show(fragmentManager,"askDeleteDialog");
+            }
+        });
     }
+
+    public static class AskUserDeleteDialog extends AppCompatDialogFragment{
+        private final String codeForDelete;
+
+        public AskUserDeleteDialog(String codeForDelete){
+            this.codeForDelete = codeForDelete;
+        }
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Осторожно!")
+                    .setMessage("Вы действительно хотите удалить это фото? Баллы вычитаются")
+                    .setIcon(R.drawable.basket_icon)
+                    .setNegativeButton("ОТМЕНА", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    })
+                    .setPositiveButton("УДАЛИТЬ", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            deleteImageFromSQL(codeForDelete);
+                            Intent intent = new Intent(getContext(), ProfileUser.class);
+                            startActivity(intent);
+                        }
+                    });
+
+            return builder.create();
+        }
+        private void deleteImageFromSQL(String code){
+            SQLSenderConnector connector = new SQLSenderConnector();
+            Connection connection = connector.toOwnConnection();
+            try{
+                Statement statement = connection.createStatement();
+                statement.executeQuery("DELETE FROM ACHIEVMENTS WHERE IMG_CODE = "+"\'"+code+"\'"+";");
+                Toast.makeText(getContext(),"УСПЕШНО УДАЛЕНО", Toast.LENGTH_LONG);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+                Log.wtf("Cant delete IMG SQL", throwables.getMessage());
+                Log.wtf("Cant delete IMG SQL", throwables.getLocalizedMessage());
+            }
+        }
+    }
+
     public static class AskUserUploadDialog extends AppCompatDialogFragment{
         private Bitmap bitmapFromGallery;
         String filePath = "";
@@ -142,42 +221,93 @@ public class ProfileUser extends AppCompatActivity {
                     Uri path =  data.getData();
                     try {
                         bitmapFromGallery = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(), path);
-                        uploadImageToServer(bitmapFromGallery);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
         }
-        private void uploadImageToServer(Bitmap currentBitmap){
-            File file = new File(filePath);
-            Retrofit retrofit = RetroClient.getRetrofit();
-            RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
-            MultipartBody.Part parts = MultipartBody.Part.createFormData("newimage",file.getName(),requestBody);
-            RequestBody someData = RequestBody.create(MediaType.parse("text/plain"),"Новая картинка");
-            Api api = retrofit.create(Api.class);
-            Call call = api.uploadImage(parts, someData);
-            call.enqueue(new Callback() {
-                @Override
-                public void onResponse(Call call, Response response) {
 
-                }
-
-                @Override
-                public void onFailure(Call call, Throwable t) {
-
-                }
-            });
-
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            currentBitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
-            byte[] imgByteArr = byteArrayOutputStream.toByteArray();
-
-            String encodedImg =  Base64.encodeToString(imgByteArr, Base64.DEFAULT);
-
-        }
     }
 
+    private void photoViewer(boolean switchToNext){
 
+        if (switchToNext && arrayIterator < imageList.size()) {
+            arrayIterator++;
+            if(arrayIterator == imageList.size()){
+                arrayIterator = 0;
+                showThisImage(arrayIterator);
+            }
+            else {
+                showThisImage(arrayIterator);
+            }
+        }
 
+        if(!switchToNext && arrayIterator >= 0) {
+            if (arrayIterator == 0) {
+                arrayIterator = imageList.size()-1;
+                showThisImage(arrayIterator);
+            } else {
+                arrayIterator--;
+                showThisImage(arrayIterator);
+            }
+        }
+
+    }
+    private void showThisImage(int iter){
+        byte[] temporaryArrayBytes = imageList.get(iter);
+        Bitmap achievBitmap = BitmapFactory.decodeByteArray(temporaryArrayBytes, 0, temporaryArrayBytes.length);
+        images.setImageBitmap(achievBitmap);
+    }
+    public ArrayList<byte[]> fillArrayImages(int idForImages){
+        ArrayList<byte[]> tempArr = new ArrayList<>();
+        SQLSenderConnector connector = new SQLSenderConnector();
+        Connection connection = connector.toOwnConnection();
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT Image FROM ACHIEVMENTS WHERE OWN_ID_FOR_SEARCH = "+idForImages+";");
+            while (resultSet.next()){
+                tempArr.add(resultSet.getBytes(1));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            Log.wtf("Cant get IMG SQL", throwables.getMessage());
+            Log.wtf("Cant get IMG SQL", throwables.getLocalizedMessage());
+        }
+        return tempArr;
+    }
+    protected ArrayList<String> getImageCodes(int idForSearchingCodes){
+        ArrayList<String> gottenCodes = new ArrayList<>();
+        SQLSenderConnector connector = new SQLSenderConnector();
+        Connection connection = connector.toOwnConnection();
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT IMG_CODE FROM ACHIEVMENTS WHERE OWN_ID_FOR_SEARCH = "+idForSearchingCodes+";");
+            while (resultSet.next()){
+                gottenCodes.add(resultSet.getString(1));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            Log.wtf("Cant get IMG_CODE SQL", throwables.getMessage());
+            Log.wtf("Cant get IMG_CODE SQL", throwables.getLocalizedMessage());
+        }
+        return gottenCodes;
+    }
+    private ArrayList<Integer> getPointsImage(int idForSearchPoints){
+        ArrayList<Integer> tempArr = new ArrayList<>();
+        SQLSenderConnector connector = new SQLSenderConnector();
+        Connection connection = connector.toOwnConnection();
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT Image FROM ACHIEVMENTS WHERE OWN_ID_FOR_SEARCH = "+idForSearchPoints+";");
+            while (resultSet.next()){
+                tempArr.add(resultSet.getInt(1));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            Log.wtf("Cant get IMG POINTS SQL", throwables.getMessage());
+            Log.wtf("Cant get IMG POINTS SQL", throwables.getLocalizedMessage());
+        }
+        return tempArr;
+    }
 
 }

@@ -102,8 +102,5 @@ public class ShowTable extends AppCompatActivity {
             }
         });
 
-
-
-
     }
 }
