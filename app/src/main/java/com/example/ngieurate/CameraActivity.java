@@ -38,16 +38,16 @@ import java.util.Random;
 
 public class CameraActivity extends AppCompatActivity {
 
-   // private Bitmap photo;
+    // private Bitmap photo;
     private ImageView achImage;
     private Button acceptImage;
     private Spinner typesSpinner;
     private TextView youWillGetPoints;
     private SharedPreferences userData;
-    private Integer ownCounter;
     private Integer points;
     private static final int pic_id = 1337;
-    private Integer ownId; private String type;
+    private Integer ownId;
+    private String type;
     private Uri mImageUri;
 
 
@@ -88,23 +88,24 @@ public class CameraActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                ActivityCompat.requestPermissions(CameraActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PackageManager.PERMISSION_GRANTED);
-                            if (ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                            ==PackageManager.PERMISSION_GRANTED) {
-                                insertImageToSql(type);
-                                Intent intent = new Intent(CameraActivity.this, ProfileUser.class);
-                                startActivity(intent);
-                            }
-                            else {
-                                ActivityCompat.requestPermissions(CameraActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PackageManager.PERMISSION_GRANTED);
-                            }
+                ActivityCompat.requestPermissions(CameraActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
+                if (ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    insertImageToSql(type);
+                    updateAllUserPoints(points,ownId);
+                    updatePointsFromAchievs(points,ownId);
+                    Intent intent = new Intent(CameraActivity.this, ProfileUser.class);
+                    startActivity(intent);
+                } else {
+                    ActivityCompat.requestPermissions(CameraActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
+                }
             }
         });
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
         Intent camera_intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        File f = new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)+"/pic.jpg"));
+        File f = new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/pic.jpg"));
         //camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
         camera_intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
         mImageUri = Uri.fromFile(f);
@@ -115,9 +116,9 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-      //  if(resultCode != RESULT_CANCELED) {
-            if (requestCode == pic_id ) { //&& resultCode == RESULT_OK
-                loadImageFromStorage(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)+"/pic.jpg") , achImage);
+        //  if(resultCode != RESULT_CANCELED) {
+        if (requestCode == pic_id) { //&& resultCode == RESULT_OK
+            loadImageFromStorage(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/pic.jpg"), achImage);
 
                 /*achImage.setImageDrawable(null);
                 achImage.destroyDrawingCache();
@@ -125,9 +126,9 @@ public class CameraActivity extends AppCompatActivity {
                 Bitmap imagebitmap = (Bitmap) extras.get("data");
                 achImage.setImageBitmap(imagebitmap);
                 */
-                //Bitmap currentImage = (Bitmap) data.getExtras().get("data");
-                //achImage.setImageBitmap(currentImage);
-                //новый код
+            //Bitmap currentImage = (Bitmap) data.getExtras().get("data");
+            //achImage.setImageBitmap(currentImage);
+            //новый код
                 /*
                 try {
                     // place where to store camera taken picture
@@ -145,86 +146,77 @@ public class CameraActivity extends AppCompatActivity {
                     //return false;
                 }
             */
-            }
-     //   }
+        }
+        //   }
     }
 
-    private void insertIntoSql(){
+    private void insertIntoSql() {
         SQLSenderConnector connector = new SQLSenderConnector();
         Connection connection = connector.toOwnConnection();
     }
-    private File createTemporaryFile(String part, String ext) throws Exception
-    {
+
+    private File createTemporaryFile(String part, String ext) throws Exception {
         File tempDir = new File(String.valueOf(Environment.getExternalStoragePublicDirectory(String.valueOf(Environment.DIRECTORY_PICTURES))));
-        if(!tempDir.exists())
-        {
+        if (!tempDir.exists()) {
             tempDir.mkdir();
         }
         File img = null;
         try {
             img = File.createTempFile(part, ext, tempDir);
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Log.d("temp file ERR log: ", ex.getMessage());
         }
 
         return img;
     }
 
-    private void loadImageFromStorage(String path, ImageView img)
-    {
+    private void loadImageFromStorage(String path, ImageView img) {
 
         try {
-            File f=new File(path);
+            File f = new File(path);
             Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
             //ImageView img=(ImageView)findViewById(R.id.imgPicker);
             img.setImageBitmap(b);
-        }
-        catch (FileNotFoundException e)
-        {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             Log.d("Err loading IMG", e.getMessage());
         }
 
     }
 
-    public void grabImage(ImageView imageView)
-    {
+    public void grabImage(ImageView imageView) {
 
         ContentResolver cr = this.getContentResolver();
         this.getContentResolver().notifyChange(mImageUri, null);
         Bitmap bitmap;
-        try
-        {
+        try {
             bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
             imageView.setImageBitmap(bitmap);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT).show();
             Log.d("ERR LOADING IMG", "Failed to load", e);
         }
     }
 
-    private void setTextViewAndPoints(String typeAchSelected){
+    private void setTextViewAndPoints(String typeAchSelected) {
         youWillGetPoints.setVisibility(View.VISIBLE);
 
-        if (typeAchSelected.equals("Благодарственное письмо")){
+        if (typeAchSelected.equals("Благодарственное письмо")) {
             youWillGetPoints.setText("Вы получите 10 баллов");
             points = 10;
             type = "Благодарственное письмо";
         }
-        if (typeAchSelected.equals("Сертификат")){
+        if (typeAchSelected.equals("Сертификат")) {
             youWillGetPoints.setText("Вы получите 15 баллов");
             points = 15;
             type = "Сертификат";
         }
-        if (typeAchSelected.equals("Грамота")){
+        if (typeAchSelected.equals("Грамота")) {
             youWillGetPoints.setText("Вы получите 15 баллов");
             points = 15;
             type = "Грамота";
         }
-        if (typeAchSelected.equals("Диплом")){
+        if (typeAchSelected.equals("Диплом")) {
             youWillGetPoints.setText("Вы получите 20 баллов");
             points = 20;
             type = "Диплом";
@@ -232,7 +224,7 @@ public class CameraActivity extends AppCompatActivity {
 
     }
 
-    private void readFromPreferenceNow(){
+    private void readFromPreferenceNow() {
         ((Runnable) () -> {
             userData = getSharedPreferences(LoginUser.APP_PREFERENCES, MODE_PRIVATE);
             ownId = userData.getInt(LoginUser.APP_PREFERENCES_OWN_ID_ACHIEV, 0);
@@ -245,15 +237,14 @@ public class CameraActivity extends AppCompatActivity {
         File direct = new File(Environment.getExternalStorageDirectory() + "/NGIEURATEPIC/");
 
         if (!direct.exists()) {
-            File wallpaperDirectory = new File(Environment.getExternalStorageDirectory()+"/NGIEURATEPIC/");
+            File wallpaperDirectory = new File(Environment.getExternalStorageDirectory() + "/NGIEURATEPIC/");
             wallpaperDirectory.mkdirs();
         }
 
-        File file = new File(Environment.getExternalStorageDirectory()+"/NGIEURATEPIC/",fileName);
+        File file = new File(Environment.getExternalStorageDirectory() + "/NGIEURATEPIC/", fileName);
         if (file.exists()) {
             file.delete();
-        }
-        else{
+        } else {
             file.mkdir();
         }
         try {
@@ -269,34 +260,34 @@ public class CameraActivity extends AppCompatActivity {
         return file;
     }
 
-    private void insertImageToSql(String typeOfAch){
+    private void insertImageToSql(String typeOfAch) {
         //TODO:не забыть получать ID
         //TODO:реализовать назначение поинтов, а точнее их инициализацию во время выбора типа ачивки
         //TODO:не забыть включить поинты в запрос
-        char[] alphabet = {'A','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+        char[] alphabet = {'A', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
         Random random = new Random();
         String code = String.valueOf(random.nextInt(999))
-                + String.valueOf(alphabet[random.nextInt(alphabet.length-1)])
-                + String.valueOf(alphabet[random.nextInt(alphabet.length-1)])
-                +String.valueOf(random.nextInt(999))
-                + String.valueOf(alphabet[random.nextInt(alphabet.length-1)])
-                + String.valueOf(alphabet[random.nextInt(alphabet.length-1)]);
+                + String.valueOf(alphabet[random.nextInt(alphabet.length - 1)])
+                + String.valueOf(alphabet[random.nextInt(alphabet.length - 1)])
+                + String.valueOf(random.nextInt(999))
+                + String.valueOf(alphabet[random.nextInt(alphabet.length - 1)])
+                + String.valueOf(alphabet[random.nextInt(alphabet.length - 1)]);
         //
         String myPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/pic.jpg";
         Bitmap bitmapToSql = BitmapFactory.decodeFile(myPath);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmapToSql.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+        bitmapToSql.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
         byte[] imageToSql = outputStream.toByteArray();
         SQLSenderConnector senderConnector = new SQLSenderConnector();
         Connection connection = senderConnector.toOwnConnection();
-        if(connection!=null){
+        if (connection != null) {
             try {
                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO ACHIEVMENTS VALUES(?,?,?,?,?)");
                 preparedStatement.setInt(1, ownId);
-                preparedStatement.setString(2,typeOfAch);
-                preparedStatement.setInt(3,points);
+                preparedStatement.setString(2, typeOfAch);
+                preparedStatement.setInt(3, points);
                 preparedStatement.setBytes(4, imageToSql);
-                preparedStatement.setString(5,code);
+                preparedStatement.setString(5, code);
                 preparedStatement.execute();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -307,4 +298,40 @@ public class CameraActivity extends AppCompatActivity {
         //senderConnector.sendQueryCHANGING("INSERT INTO ACHIEVMENTS VALUES("+ownId+",\'"+typeOfAch+"\',"+points+","+ownCounter+","+imageToSql+");");
     }
 
+    public boolean updateAllUserPoints(int plusPoints, int ownAchievID) {
+        boolean result = false;
+        SQLSenderConnector senderConnector = new SQLSenderConnector();
+        Connection connection = senderConnector.toOwnConnection();
+        if (connection != null) {
+            try {
+                PreparedStatement preparedStatement = connection.prepareStatement("UPDATE STUDENT_DATA SET ALL_POINTS = ALL_POINTS + "+plusPoints+ "WHERE ACHIEVMENTS_ID ="+ownAchievID+ ";");
+                preparedStatement.executeQuery();
+                result = true;
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+                Log.wtf("Cant UPDATE POINTS", throwables.getMessage());
+                Log.wtf("Cant UPDATE POINTS", throwables.getLocalizedMessage());
+                result = false;
+            }
+        }
+        return result;
+    }
+    public boolean updatePointsFromAchievs(int plusPoints, int ownAchievID){
+        boolean result = false;
+        SQLSenderConnector senderConnector = new SQLSenderConnector();
+        Connection connection = senderConnector.toOwnConnection();
+        if (connection != null) {
+            try {
+                PreparedStatement preparedStatement = connection.prepareStatement("UPDATE STUDENT_DATA SET POINTS_FROM_ACHIEVS = POINTS_FROM_ACHIEVS + "+plusPoints+ "WHERE ACHIEVMENTS_ID ="+ownAchievID+ ";");
+                preparedStatement.executeQuery();
+                result = true;
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+                Log.wtf("Cant UPDATE POINTS", throwables.getMessage());
+                Log.wtf("Cant UPDATE POINTS", throwables.getLocalizedMessage());
+                result = false;
+            }
+        }
+        return result;
+    }
 }

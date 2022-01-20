@@ -102,14 +102,15 @@ public class ProfileUser extends AppCompatActivity {
         imageList = fillArrayImages(ownId);
         ownImgCodes = getImageCodes(ownId);
         pointsList = getPointsImage(ownId);
-
-        byte[] temporaryArrayBytes = imageList.get(0);
-        Bitmap achievBitmap = BitmapFactory.decodeByteArray(temporaryArrayBytes, 0, temporaryArrayBytes.length);
-        images.setImageBitmap(achievBitmap);
-
+        if(!imageList.isEmpty()) {
+            byte[] temporaryArrayBytes = imageList.get(0);
+            Bitmap achievBitmap = BitmapFactory.decodeByteArray(temporaryArrayBytes, 0, temporaryArrayBytes.length);
+            images.setImageBitmap(achievBitmap);
+        }
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!imageList.isEmpty())
                 photoViewer(true);
             }
         });
@@ -117,6 +118,7 @@ public class ProfileUser extends AppCompatActivity {
         prevBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!imageList.isEmpty())
                 photoViewer(false);
             }
         });
@@ -125,7 +127,7 @@ public class ProfileUser extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
-                AskUserDeleteDialog deleter = new AskUserDeleteDialog(ownImgCodes.get(arrayIterator));
+                AskUserDeleteDialog deleter = new AskUserDeleteDialog(ownImgCodes.get(arrayIterator), ownId);
                 deleter.show(fragmentManager,"askDeleteDialog");
             }
         });
@@ -133,9 +135,10 @@ public class ProfileUser extends AppCompatActivity {
 
     public static class AskUserDeleteDialog extends AppCompatDialogFragment{
         private final String codeForDelete;
-
-        public AskUserDeleteDialog(String codeForDelete){
+        private final int ownIdForUpdating;
+        public AskUserDeleteDialog(String codeForDelete, int ownIdForUpdating){
             this.codeForDelete = codeForDelete;
+            this.ownIdForUpdating = ownIdForUpdating;
         }
         @NonNull
         @Override
@@ -153,7 +156,7 @@ public class ProfileUser extends AppCompatActivity {
                     .setPositiveButton("УДАЛИТЬ", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            deleteImageFromSQL(codeForDelete);
+                            deleteImageFromSQLandDeletePoints(codeForDelete, ownIdForUpdating);
                             Intent intent = new Intent(getContext(), ProfileUser.class);
                             startActivity(intent);
                         }
@@ -161,18 +164,56 @@ public class ProfileUser extends AppCompatActivity {
 
             return builder.create();
         }
-        private void deleteImageFromSQL(String code){
+        private void deleteImageFromSQLandDeletePoints(String code, int ownId){
+            int pointsTODEL = checkPointsForDeleting(code);
             SQLSenderConnector connector = new SQLSenderConnector();
             Connection connection = connector.toOwnConnection();
             try{
+
                 Statement statement = connection.createStatement();
-                statement.executeQuery("DELETE FROM ACHIEVMENTS WHERE IMG_CODE = "+"\'"+code+"\'"+";");
-                Toast.makeText(getContext(),"УСПЕШНО УДАЛЕНО", Toast.LENGTH_LONG);
+                if (pointsTODEL > 0) {
+                    CameraActivity tempClass = new CameraActivity();
+                    tempClass.updateAllUserPoints(-pointsTODEL, ownId);
+                    tempClass.updatePointsFromAchievs(-pointsTODEL, ownId);
+                    statement.execute("DELETE FROM ACHIEVMENTS WHERE IMG_CODE = " + "\'" + code + "\'" + ";");
+                    Toast.makeText(getContext(), "УСПЕШНО УДАЛЕНО", Toast.LENGTH_LONG);
+                }
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
                 Log.wtf("Cant delete IMG SQL", throwables.getMessage());
                 Log.wtf("Cant delete IMG SQL", throwables.getLocalizedMessage());
             }
+        }
+        private int checkPointsForDeleting(String code){
+            int pointsFromImg = 0;
+            String typeOfAch = null;
+            SQLSenderConnector connector = new SQLSenderConnector();
+            Connection connection = connector.toOwnConnection();
+            try{
+                Statement statement = connection.createStatement();
+                String query = "SELECT TYPE FROM ACHIEVMENTS WHERE IMG_CODE = "+"\'"+code+"\'"+";";
+                ResultSet inf = statement.executeQuery(query);
+                while (inf.next()) {
+                    inf.getString(1);
+                    typeOfAch = inf.getString("TYPE");
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+                Log.wtf("Cant get IMG TYPE SQL", throwables.getMessage());
+                Log.wtf("Cant get IMG TYPE SQL", throwables.getLocalizedMessage());
+            }
+            if(typeOfAch != null) {
+                if (typeOfAch.equals("Благодарственное письмо")) {
+                    pointsFromImg = 10;
+                } else if (typeOfAch.equals("Сертификат")) {
+                    pointsFromImg = 15;
+                } else if (typeOfAch.equals("Грамота")) {
+                    pointsFromImg = 15;
+                } else if (typeOfAch.equals("Диплом")) {
+                    pointsFromImg = 20;
+                }
+            }
+            return pointsFromImg;
         }
     }
 
@@ -192,8 +233,6 @@ public class ProfileUser extends AppCompatActivity {
                             //Код для запуска камеры
                             Intent intent = new Intent(getActivity(), CameraActivity.class);
                             startActivity(intent);
-                            ///////
-                            //Код для сохранения фотки
                         }
                     })
                     .setPositiveButton("ГАЛЕРЕЯ", new DialogInterface.OnClickListener() {
@@ -298,7 +337,7 @@ public class ProfileUser extends AppCompatActivity {
         Connection connection = connector.toOwnConnection();
         try{
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT Image FROM ACHIEVMENTS WHERE OWN_ID_FOR_SEARCH = "+idForSearchPoints+";");
+            ResultSet resultSet = statement.executeQuery("SELECT POINTS FROM ACHIEVMENTS WHERE OWN_ID_FOR_SEARCH = "+idForSearchPoints+";");
             while (resultSet.next()){
                 tempArr.add(resultSet.getInt(1));
             }
