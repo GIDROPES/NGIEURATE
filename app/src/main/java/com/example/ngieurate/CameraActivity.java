@@ -150,26 +150,6 @@ public class CameraActivity extends AppCompatActivity {
         //   }
     }
 
-    private void insertIntoSql() {
-        SQLSenderConnector connector = new SQLSenderConnector();
-        Connection connection = connector.toOwnConnection();
-    }
-
-    private File createTemporaryFile(String part, String ext) throws Exception {
-        File tempDir = new File(String.valueOf(Environment.getExternalStoragePublicDirectory(String.valueOf(Environment.DIRECTORY_PICTURES))));
-        if (!tempDir.exists()) {
-            tempDir.mkdir();
-        }
-        File img = null;
-        try {
-            img = File.createTempFile(part, ext, tempDir);
-        } catch (Exception ex) {
-            Log.d("temp file ERR log: ", ex.getMessage());
-        }
-
-        return img;
-    }
-
     private void loadImageFromStorage(String path, ImageView img) {
 
         try {
@@ -230,34 +210,6 @@ public class CameraActivity extends AppCompatActivity {
             ownId = userData.getInt(LoginUser.APP_PREFERENCES_OWN_ID_ACHIEV, 0);
             //ownCounter = userData.getInt(LoginUser.APP_PREFERENCES_OWN_COUNTER, 0);
         }).run();
-    }
-
-    private File createDirectoryAndSaveFile(Bitmap imageToSave, String fileName) {
-
-        File direct = new File(Environment.getExternalStorageDirectory() + "/NGIEURATEPIC/");
-
-        if (!direct.exists()) {
-            File wallpaperDirectory = new File(Environment.getExternalStorageDirectory() + "/NGIEURATEPIC/");
-            wallpaperDirectory.mkdirs();
-        }
-
-        File file = new File(Environment.getExternalStorageDirectory() + "/NGIEURATEPIC/", fileName);
-        if (file.exists()) {
-            file.delete();
-        } else {
-            file.mkdir();
-        }
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            imageToSave.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d("ErrorSave", e.getMessage());
-        }
-
-        return file;
     }
 
     private void insertImageToSql(String typeOfAch) {

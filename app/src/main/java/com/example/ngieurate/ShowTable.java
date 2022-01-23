@@ -95,10 +95,12 @@ public class ShowTable extends AppCompatActivity {
                         adapter = new SimpleAdapter(ShowTable.this, data, R.layout.gridview_layout,from,to);
                         mainGridView.setAdapter(adapter);
                     }
-                } catch (SQLException throwables) {
+                }
+                catch (SQLException throwables) {
                     Log.d("SHOW ERROR: ", throwables.getMessage());
                     throwables.printStackTrace();
                 }
+
             }
         });
 

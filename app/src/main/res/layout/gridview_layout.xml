@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="5dp">
+    android:padding="7dp">
     <TextView
         android:id="@+id/rate"
         android:layout_width="wrap_content"
@@ -15,13 +15,14 @@
         android:id="@+id/empty1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15sp"/>
+        android:textSize="16sp"/>
 
     <TextView
         android:id="@+id/fioTable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15sp"/>
+        android:textStyle="bold"
+        android:textSize="16sp"/>
     <TextView
         android:id="@+id/empty2"
         android:layout_width="wrap_content"
@@ -31,12 +32,12 @@
         android:id="@+id/grNumTable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15sp"/>
+        android:textSize="16sp"/>
     <TextView
         android:id="@+id/empty3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15sp"/>
+        android:textSize="16sp"/>
     <TextView
         android:id="@+id/pointsTable"
         android:layout_width="wrap_content"

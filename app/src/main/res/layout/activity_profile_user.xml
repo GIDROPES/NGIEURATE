@@ -60,7 +60,7 @@
                             android:textStyle="bold" />
 
                         <Button
-                            android:id="@+id/grouppmatesBtn"
+                            android:id="@+id/studentsBtn"
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/avatarUser"
@@ -68,7 +68,7 @@
                             android:layout_marginEnd="30dp"
                             android:layout_toStartOf="@id/checkRateBtn"
                             android:background="@drawable/button_ripped"
-                            android:text="Одногруппники"
+                            android:text="Студенты"
                             android:textColor="@color/white"
                             android:textSize="10dp" />
 
@@ -88,7 +88,7 @@
                             android:id="@+id/positionInGroup"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/grouppmatesBtn"
+                            android:layout_below="@id/studentsBtn"
                             android:layout_alignParentStart="true"
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="20dp"

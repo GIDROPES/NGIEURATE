@@ -128,8 +128,16 @@ public class LoginUser extends AppCompatActivity {
                     }.run();
                 }
                 Integer id = Integer.parseInt(sender.sendQueryToSQLgetString("SELECT [NGIEURATE].dbo.SIGNIN_DATA.ID_Of_Student FROM [NGIEURATE].dbo.SIGNIN_DATA WHERE Login = \'"+login+"\';"));
-                makeSave(id);
+                initializeFromSQL(id);
+                //makeSave(id);
                 Intent intent = new Intent(LoginUser.this, ProfileUser.class);
+                intent.putExtra("fio", FIO);
+                intent.putExtra("group", group_number);
+                intent.putExtra("points", points);
+                intent.putExtra("position_general", position_general);
+                intent.putExtra("position_group", position_group);
+                intent.putExtra("idAchiev", idAchiev);
+                intent.putExtra("ownerOfAccount", true);
                 startActivity(intent);
             }
             else {
@@ -153,13 +161,13 @@ public class LoginUser extends AppCompatActivity {
             points = Integer.parseInt(connector.sendQueryToSQLgetString("SELECT ALL_POINTS FROM STUDENT_DATA WHERE ID=\'"+id+"\';"));
             position_general = Integer.parseInt(connector.sendQueryToSQLgetString("SELECT RATE FROM(" +
                     "SELECT *, ROW_NUMBER() OVER (ORDER BY ALL_POINTS DESC) AS RATE FROM STUDENT_DATA) as RT " +
-                    "WHERE ID = " + id + " ;"));
+                    "WHERE ID = " + id + " ;"));  //TODO: ПЕРЕНЕСТИ КУСОК КОДА В КЛАСС PROFILEUSER
             position_group = Integer.parseInt(connector.sendQueryToSQLgetString ("SELECT RATE FROM("+
                     "SELECT *, ROW_NUMBER() OVER (ORDER BY ALL_POINTS DESC) AS RATE FROM STUDENT_DATA WHERE GROUP_NUMBER = \'"+group_number+"\') as RT " +
-                    "WHERE ID ="+id+";"));
+                    "WHERE ID ="+id+";")); //TODO: ПЕРЕНЕСТИ КУСОК КОДА В КЛАСС PROFILEUSER
             idAchiev = Integer.parseInt(connector.sendQueryToSQLgetString("SELECT ACHIEVMENTS_ID FROM STUDENT_DATA WHERE ID=\'"+id+"\';"));
-            count = Integer.parseInt(connector.sendQueryToSQLgetString("SELECT COUNT(*) FROM ACHIEVMENTS WHERE  OWN_ID_FOR_SEARCH ="+idAchiev+";"));
-            writeToPreferences(FIO, group_number, points, position_general, position_group, idAchiev,count);
+            //count = Integer.parseInt(connector.sendQueryToSQLgetString("SELECT COUNT(*) FROM ACHIEVMENTS WHERE  OWN_ID_FOR_SEARCH ="+idAchiev+";"));
+            //writeToPreferences(FIO, group_number, points, position_general, position_group, idAchiev,count);
         }
 
         private void writeToPreferences(String fio, String group,  Integer pnts, Integer pos_gen, Integer pos_gr,int idAchievment, int ownCount){

@@ -39,7 +39,7 @@ public class ProfileUser extends AppCompatActivity {
     String fio, grNum;
     Integer posAll, posGr, allPnts;
     SharedPreferences myData;
-    private Button checkRateBtn, nextBtn, prevBtn, deleteImageBtn;
+    private Button checkRateBtn, nextBtn, prevBtn, deleteImageBtn, studentsBtn;
     private int ownId;
     private int arrayIterator = 0;
     private ArrayList<byte[]> imageList;
@@ -85,23 +85,17 @@ public class ProfileUser extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        myData = getSharedPreferences(LoginUser.APP_PREFERENCES, MODE_PRIVATE);
-        //строковые
-        fio = myData.getString(LoginUser.APP_PREFERENCES_USER_FIO,"No data");
-        grNum =  myData.getString(LoginUser.APP_PREFERENCES_USER_GROUP,"");
-        //числовые
-        posAll = myData.getInt(LoginUser.APP_PREFERENCES_POSITION_GENERAL, 0);
-        posGr = myData.getInt(LoginUser.APP_PREFERENCES_POSITION_GROUP,0);
-        allPnts = myData.getInt(LoginUser.APP_PREFERENCES_USER_POINTS, 0);
-        ownId = myData.getInt(LoginUser.APP_PREFERENCES_OWN_ID_ACHIEV,0);
+        //myData = getSharedPreferences(LoginUser.APP_PREFERENCES, MODE_PRIVATE);
+        getIntentInfo();
         //работа с вьюшками
         nameFio.setText(fio); groupNumber.setText(grNum);
-        allPoints.setText("ВСЕГО баллов: " + String.valueOf(allPnts));
-        positionOfAll.setText("Поз. в общем рейтинге: "+  String.valueOf(posAll)); positionInGroup.setText("Поз. в рейтинге группы: "+ String.valueOf(posGr));
+        allPoints.setText("ВСЕГО баллов: " + allPnts);
+        positionOfAll.setText("Поз. в общем рейтинге: "+ posAll); positionInGroup.setText("Поз. в рейтинге группы: "+ posGr);
 
         imageList = fillArrayImages(ownId);
         ownImgCodes = getImageCodes(ownId);
         pointsList = getPointsImage(ownId);
+
         if(!imageList.isEmpty()) {
             byte[] temporaryArrayBytes = imageList.get(0);
             Bitmap achievBitmap = BitmapFactory.decodeByteArray(temporaryArrayBytes, 0, temporaryArrayBytes.length);
@@ -131,6 +125,19 @@ public class ProfileUser extends AppCompatActivity {
                 deleter.show(fragmentManager,"askDeleteDialog");
             }
         });
+
+    }
+
+    private void getIntentInfo(){
+        Intent intent = getIntent();
+        //строковые
+        fio = intent.getStringExtra("fio");
+        grNum =  intent.getStringExtra("group");
+        //числовые
+        posAll = intent.getIntExtra("position_general",-1);
+        posGr = intent.getIntExtra("position_group",-1);
+        allPnts = intent.getIntExtra("points", -1);
+        ownId = intent.getIntExtra("idAchiev", -1);
     }
 
     public static class AskUserDeleteDialog extends AppCompatDialogFragment{
