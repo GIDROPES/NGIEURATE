@@ -32,14 +32,20 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class ProfileUser extends AppCompatActivity {
-    ImageView clickToUpload, images;
+    ImageView images;
+    //видно всегда
     TextView nameFio, groupNumber,
-            positionOfAll, positionInGroup,
+            positionOfAll,
             allPoints;
-    String fio, grNum;
-    Integer posAll, posGr, allPnts;
-    SharedPreferences myData;
-    private Button checkRateBtn, nextBtn, prevBtn, deleteImageBtn, studentsBtn;
+    //видно не всегда
+    TextView txtUpload, formatsTxtV, myAccount;
+    ImageView clickToUpload;
+
+    private boolean isOwnerOfAccount;
+    private String fio, grNum;
+    private Integer posAll, posGr, allPnts, instit_code;
+    private SharedPreferences myData;
+    private Button checkRateBtn, nextBtn, prevBtn, deleteImageBtn;
     private int ownId;
     private int arrayIterator = 0;
     private ArrayList<byte[]> imageList;
@@ -67,8 +73,9 @@ public class ProfileUser extends AppCompatActivity {
         groupNumber = findViewById(R.id.groupNumber);
         allPoints = findViewById(R.id.allPoints);
         positionOfAll = findViewById(R.id.positionOfAll);
-        positionInGroup = findViewById(R.id.positionInGroup);
-
+        txtUpload = findViewById(R.id.txtUpload);
+        formatsTxtV = findViewById(R.id.formatsTxtV);
+        myAccount = findViewById(R.id.myAccountTXT);
         //действия
         clickToUpload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,15 +89,23 @@ public class ProfileUser extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ProfileUser.this, ShowTable.class);
+                intent.putExtra( "group_number",grNum);
+                intent.putExtra("instit_code",instit_code);
                 startActivity(intent);
             }
         });
         //myData = getSharedPreferences(LoginUser.APP_PREFERENCES, MODE_PRIVATE);
         getIntentInfo();
+        if (!isOwnerOfAccount){
+            txtUpload.setVisibility(View.INVISIBLE);
+            clickToUpload.setVisibility(View.INVISIBLE);
+            formatsTxtV.setVisibility(View.INVISIBLE);
+            myAccount.setVisibility(View.INVISIBLE);
+        }
         //работа с вьюшками
         nameFio.setText(fio); groupNumber.setText(grNum);
         allPoints.setText("ВСЕГО баллов: " + allPnts);
-        positionOfAll.setText("Поз. в общем рейтинге: "+ posAll); positionInGroup.setText("Поз. в рейтинге группы: "+ posGr);
+        positionOfAll.setText("Поз. в общем рейтинге: "+ posAll);
 
         imageList = fillArrayImages(ownId);
         ownImgCodes = getImageCodes(ownId);
@@ -135,9 +150,12 @@ public class ProfileUser extends AppCompatActivity {
         grNum =  intent.getStringExtra("group");
         //числовые
         posAll = intent.getIntExtra("position_general",-1);
-        posGr = intent.getIntExtra("position_group",-1);
         allPnts = intent.getIntExtra("points", -1);
         ownId = intent.getIntExtra("idAchiev", -1);
+        instit_code = intent.getIntExtra("instit_code", -1);
+        //логические
+        isOwnerOfAccount = intent.getBooleanExtra("ownerOfAccount", false);
+
     }
 
     public static class AskUserDeleteDialog extends AppCompatDialogFragment{

@@ -54,7 +54,7 @@ public class LoginUser extends AppCompatActivity {
     private String FIO;
     private String group_number;
     private Integer points;
-    private Integer position_group, position_general;
+    private Integer position_group, position_general, instit_code;
 
     private SharedPreferences userData;
 
@@ -137,6 +137,7 @@ public class LoginUser extends AppCompatActivity {
                 intent.putExtra("position_general", position_general);
                 intent.putExtra("position_group", position_group);
                 intent.putExtra("idAchiev", idAchiev);
+                intent.putExtra("instit_code", instit_code);
                 intent.putExtra("ownerOfAccount", true);
                 startActivity(intent);
             }
@@ -168,6 +169,7 @@ public class LoginUser extends AppCompatActivity {
             idAchiev = Integer.parseInt(connector.sendQueryToSQLgetString("SELECT ACHIEVMENTS_ID FROM STUDENT_DATA WHERE ID=\'"+id+"\';"));
             //count = Integer.parseInt(connector.sendQueryToSQLgetString("SELECT COUNT(*) FROM ACHIEVMENTS WHERE  OWN_ID_FOR_SEARCH ="+idAchiev+";"));
             //writeToPreferences(FIO, group_number, points, position_general, position_group, idAchiev,count);
+            instit_code = Integer.parseInt(connector.sendQueryToSQLgetString("SELECT INSTIT_CODE FROM STUDENT_DATA WHERE ID=\'"+id+"\';"));
         }
 
         private void writeToPreferences(String fio, String group,  Integer pnts, Integer pos_gen, Integer pos_gr,int idAchievment, int ownCount){
