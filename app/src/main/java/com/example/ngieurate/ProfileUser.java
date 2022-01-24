@@ -42,11 +42,11 @@ public class ProfileUser extends AppCompatActivity {
     ImageView clickToUpload;
 
     private boolean isOwnerOfAccount;
-    private String fio, grNum;
-    private Integer posAll, posGr, allPnts, instit_code;
+    public static String fio, grNum, institution_str;
+    public static Integer posAll, posGr, allPnts, instit_code;
     private SharedPreferences myData;
-    private Button checkRateBtn, nextBtn, prevBtn, deleteImageBtn;
-    private int ownId;
+    private Button checkRateBtn, nextBtn, prevBtn, deleteImageBtn, sendReportBtn;
+    public static Integer ownId;
     private int arrayIterator = 0;
     private ArrayList<byte[]> imageList;
     private ArrayList<String> ownImgCodes;
@@ -67,6 +67,7 @@ public class ProfileUser extends AppCompatActivity {
         checkRateBtn = findViewById(R.id.checkRateBtn);
         clickToUpload =  findViewById(R.id.clickToUpload);
         deleteImageBtn = findViewById(R.id.deleteImage);
+        sendReportBtn = findViewById(R.id.sendReportBTN);
         images = findViewById(R.id.images);
         //сопоставляем текстовые штуки
         nameFio = findViewById(R.id.nameFio);
@@ -97,10 +98,18 @@ public class ProfileUser extends AppCompatActivity {
         //myData = getSharedPreferences(LoginUser.APP_PREFERENCES, MODE_PRIVATE);
         getIntentInfo();
         if (!isOwnerOfAccount){
-            txtUpload.setVisibility(View.INVISIBLE);
+            deleteImageBtn.setVisibility(View.INVISIBLE);
+            sendReportBtn.setVisibility(View.VISIBLE);
+            txtUpload.setText("");
             clickToUpload.setVisibility(View.INVISIBLE);
-            formatsTxtV.setVisibility(View.INVISIBLE);
-            myAccount.setVisibility(View.INVISIBLE);
+            formatsTxtV.setText("Выберите фотографию и отправьте репорт, если фото не соответствует требованиям");
+            checkRateBtn.setClickable(false); checkRateBtn.setAlpha(0.4f);
+            SQLSenderConnector connector = new SQLSenderConnector();
+            institution_str = connector.sendQueryToSQLgetString("SELECT INSTITUTE FROM INSTITUTIONS WHERE INSTIT_NUMBER_KEY = "+instit_code+";");
+            myAccount.setText("Студент(-ка) "+ institution_str); myAccount.setTextSize(12f); myAccount.setTextColor(getResources().getColor(R.color.dark_ocean));
+        }
+        else{
+            sendReportBtn.setVisibility(View.INVISIBLE);
         }
         //работа с вьюшками
         nameFio.setText(fio); groupNumber.setText(grNum);
@@ -116,6 +125,11 @@ public class ProfileUser extends AppCompatActivity {
             Bitmap achievBitmap = BitmapFactory.decodeByteArray(temporaryArrayBytes, 0, temporaryArrayBytes.length);
             images.setImageBitmap(achievBitmap);
         }
+        else {
+            images.setImageResource(R.drawable.images_empty);
+            sendReportBtn.setClickable(false); sendReportBtn.setAlpha(0.4f);
+        }
+
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -257,6 +271,13 @@ public class ProfileUser extends AppCompatActivity {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             //Код для запуска камеры
                             Intent intent = new Intent(getActivity(), CameraActivity.class);
+                            intent.putExtra("fio", fio);
+                            intent.putExtra("group", grNum);
+                            intent.putExtra("points", allPnts);
+                            intent.putExtra("position_general", posAll);
+                            intent.putExtra("idAchiev", ownId);
+                            intent.putExtra("instit_code", instit_code);
+                            intent.putExtra("ownerOfAccount", true);
                             startActivity(intent);
                         }
                     })

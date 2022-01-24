@@ -64,7 +64,7 @@ public class ShowTable extends AppCompatActivity {
         updateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                listForNewIntent.clear();  //для избежания бага очищаем лист для намерений
                 help.setVisibility(View.INVISIBLE);
                 int position = spinner.getSelectedItemPosition();
 
@@ -74,11 +74,11 @@ public class ShowTable extends AppCompatActivity {
                     connection = sender.toOwnConnection();
                     if (connection!=null){
                         if (position == 0)
-                            query = "SELECT ROW_NUMBER() OVER (ORDER BY ALL_POINTS DESC) AS RATE, FIO,GROUP_NUMBER,ALL_POINTS,ACHIEVMENTS_ID FROM STUDENT_DATA;";
+                            query = "SELECT ROW_NUMBER() OVER (ORDER BY ALL_POINTS DESC) AS RATE, FIO,GROUP_NUMBER,ALL_POINTS,ACHIEVMENTS_ID,INSTIT_CODE FROM STUDENT_DATA;";
                         if (position == 1)
-                            query = "SELECT ROW_NUMBER() OVER (ORDER BY ALL_POINTS DESC) AS RATE, FIO,GROUP_NUMBER,ALL_POINTS,ACHIEVMENTS_ID FROM STUDENT_DATA WHERE  GROUP_NUMBER = \'" +group +"\';";
+                            query = "SELECT ROW_NUMBER() OVER (ORDER BY ALL_POINTS DESC) AS RATE, FIO,GROUP_NUMBER,ALL_POINTS,ACHIEVMENTS_ID,INSTIT_CODE FROM STUDENT_DATA WHERE  GROUP_NUMBER = \'" +group +"\';";
                         if (position == 2)
-                            query = "SELECT ROW_NUMBER() OVER (ORDER BY ALL_POINTS DESC) AS RATE, FIO,GROUP_NUMBER,ALL_POINTS,ACHIEVMENTS_ID FROM STUDENT_DATA WHERE  INSTIT_CODE = "+instit_code+";";
+                            query = "SELECT ROW_NUMBER() OVER (ORDER BY ALL_POINTS DESC) AS RATE, FIO,GROUP_NUMBER,ALL_POINTS,ACHIEVMENTS_ID,INSTIT_CODE FROM STUDENT_DATA WHERE  INSTIT_CODE = "+instit_code+";";
                         Statement statement = connection.createStatement();
                         ResultSet set = statement.executeQuery(query);
                         List<Map<String,String>> data = new ArrayList<Map<String,String>>();
@@ -93,6 +93,8 @@ public class ShowTable extends AppCompatActivity {
                             tab.put("ALL_POINTS", set.getString("ALL_POINTS"));
                             tab.put("EMPTY4","  ");
                             tab.put("ACHIEVMENTS_ID", set.getString("ACHIEVMENTS_ID"));
+                            tab.put("EMPTY5","  ");
+                            tab.put("INSTIT_CODE", set.getString("INSTIT_CODE"));
                             data.add(tab);
                             listForNewIntent.add(tab);
                         }
@@ -119,6 +121,7 @@ public class ShowTable extends AppCompatActivity {
                 intent.putExtra("points", Integer.parseInt(tempMap.get("ALL_POINTS")));
                 intent.putExtra("position_general", Integer.parseInt(tempMap.get("RATE")));
                 intent.putExtra("idAchiev", Integer.parseInt(tempMap.get("ACHIEVMENTS_ID")));
+                intent.putExtra("instit_code", Integer.parseInt(tempMap.get("INSTIT_CODE")));
                 intent.putExtra("ownerOfAccount", false);
                 startActivity(intent);
             }

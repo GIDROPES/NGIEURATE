@@ -49,14 +49,14 @@ public class CameraActivity extends AppCompatActivity {
     private Integer ownId;
     private String type;
     private Uri mImageUri;
-
-
+    private  String fio, grNum;
+    private  Integer instit_code, allPnts, posAll;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
-        readFromPreferenceNow();
+        readFromIntent();
 
         achImage = findViewById(R.id.AchImage);
         acceptImage = findViewById(R.id.acceptImageButton);
@@ -94,7 +94,20 @@ public class CameraActivity extends AppCompatActivity {
                     insertImageToSql(type);
                     updateAllUserPoints(points,ownId);
                     updatePointsFromAchievs(points,ownId);
+
+                    SQLSenderConnector connector = new SQLSenderConnector();
+                    allPnts = Integer.parseInt(connector.sendQueryToSQLgetString("SELECT ALL_POINTS FROM STUDENT_DATA WHERE ACHIEVMENTS_ID = "+ownId+";"));
+                    posAll = Integer.parseInt(connector.sendQueryToSQLgetString("SELECT RATE FROM(" +
+                            "SELECT *, ROW_NUMBER() OVER (ORDER BY ALL_POINTS DESC) AS RATE FROM STUDENT_DATA) as RT " +
+                            "WHERE ACHIEVMENTS_ID = " + ownId + " ;"));
                     Intent intent = new Intent(CameraActivity.this, ProfileUser.class);
+                    intent.putExtra("fio", fio);
+                    intent.putExtra("group", grNum);
+                    intent.putExtra("points", allPnts);
+                    intent.putExtra("position_general", posAll);
+                    intent.putExtra("idAchiev", ownId);
+                    intent.putExtra("instit_code", instit_code);
+                    intent.putExtra("ownerOfAccount", true);
                     startActivity(intent);
                 } else {
                     ActivityCompat.requestPermissions(CameraActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
@@ -204,12 +217,14 @@ public class CameraActivity extends AppCompatActivity {
 
     }
 
-    private void readFromPreferenceNow() {
-        ((Runnable) () -> {
-            userData = getSharedPreferences(LoginUser.APP_PREFERENCES, MODE_PRIVATE);
-            ownId = userData.getInt(LoginUser.APP_PREFERENCES_OWN_ID_ACHIEV, 0);
-            //ownCounter = userData.getInt(LoginUser.APP_PREFERENCES_OWN_COUNTER, 0);
-        }).run();
+    private void readFromIntent() {
+        Intent intent = getIntent();
+        fio = intent.getStringExtra("fio");
+        grNum =  intent.getStringExtra("group");
+        //числовые
+        ownId = intent.getIntExtra("idAchiev", -1);
+        instit_code = intent.getIntExtra("instit_code", -1);
+        //логические
     }
 
     private void insertImageToSql(String typeOfAch) {

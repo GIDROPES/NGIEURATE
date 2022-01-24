@@ -41,18 +41,20 @@
         android:textSize="20dp"
         android:hint="Введите пароль"
          />
+
     <Button
         android:id="@+id/nextBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:layout_marginRight="35dp"
+        android:background="@drawable/button_ripped"
         android:text="ДАЛЕЕ >"
-        android:textSize="20sp"
         android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/checkBoxModerator"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/EditPassword"
-        android:background="@drawable/button_ripped"/>
+        />
     <ImageView
         android:id="@+id/imageViewNgieuAtLoginPanel"
         android:layout_width="80dp"
@@ -90,8 +92,19 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
         android:text="Запомнить меня"
+        android:textStyle="bold"
         android:theme="@style/MyOwnCheckBox"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtVNEVERNO" />
+    <CheckBox
+        android:id="@+id/checkBoxModerator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:text="Я МОДЕРАТОР"
+        android:theme="@style/MyOwnCheckBox"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxLogin"
+        android:layout_marginTop="10dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

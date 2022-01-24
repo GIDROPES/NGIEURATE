@@ -28,7 +28,7 @@ public class LoginUser extends AppCompatActivity {
     private EditText editLogin, editPassword;
     private Button nextBtn;
     private TextView txtNeverno;
-    private CheckBox checkBoxLogin;
+    private CheckBox checkBoxLogin, checkBoxModerator;
 
     private String ip = "192.168.43.118", port = "1433";
     private String aClass = "net.sourceforge.jtds.jdbc.Driver";
@@ -70,7 +70,8 @@ public class LoginUser extends AppCompatActivity {
         editLogin = (EditText) findViewById(R.id.EditLogin);
         editPassword = (EditText) findViewById(R.id.EditPassword);
         checkBoxLogin = findViewById(R.id.checkBoxLogin);
-
+        checkBoxModerator = findViewById(R.id.checkBoxModerator);
+        
         userData = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
         boolean isChecked = userData.getBoolean(APP_PREFERENCES_CHECKBOX_CHECKED, false);
         String savedLogin = userData.getString(APP_PREFERENCES_OWN_LOGIN,"");
@@ -92,58 +93,99 @@ public class LoginUser extends AppCompatActivity {
             SQLSenderConnector sender = new SQLSenderConnector();
             String login, password = null;
 
-            login = String.valueOf(editLogin.getText());
-            password = sender.sendQueryToSQLgetString("SELECT Password FROM SIGNIN_DATA WHERE Login = \'"+login+"\';");
+            if(checkBoxModerator.isChecked()){
+                login = String.valueOf(editLogin.getText());
+                password = sender.sendQueryToSQLgetString("SELECT PASSWORD_KEY FROM MODER_DATA WHERE LOGIN_KEY = \'" + login + "\';");
+                if (String.valueOf(editPassword.getText()).equals(password)) {
+                    txtNeverno.setVisibility(View.INVISIBLE);
 
-            if (String.valueOf(editPassword.getText()).equals(password)){
-                txtNeverno.setVisibility(View.INVISIBLE);
-                if (checkBoxLogin.isChecked()){
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            userData = getSharedPreferences(LoginUser.APP_PREFERENCES, MODE_PRIVATE);
-                            SharedPreferences.Editor editor = userData.edit();
-                            editor.putBoolean(LoginUser.APP_PREFERENCES_CHECKBOX_CHECKED,true);
-                            editor.apply();
-                            editor.putString(LoginUser.APP_PREFERENCES_OWN_LOGIN, String.valueOf(editLogin.getText()));
-                            editor.apply();
-                            editor.putString(LoginUser.APP_PREFERENCES_OWN_PASSWORD,String.valueOf(editPassword.getText()));
-                            editor.apply();
-                        }
-                    }.run();
+                    if (checkBoxLogin.isChecked()) {
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                userData = getSharedPreferences(LoginUser.APP_PREFERENCES, MODE_PRIVATE);
+                                SharedPreferences.Editor editor = userData.edit();
+                                editor.putBoolean(LoginUser.APP_PREFERENCES_CHECKBOX_CHECKED, true);
+                                editor.apply();
+                                editor.putString(LoginUser.APP_PREFERENCES_OWN_LOGIN, String.valueOf(editLogin.getText()));
+                                editor.apply();
+                                editor.putString(LoginUser.APP_PREFERENCES_OWN_PASSWORD, String.valueOf(editPassword.getText()));
+                                editor.apply();
+                            }
+                        }.run();
+                    } else {
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                userData = getSharedPreferences(LoginUser.APP_PREFERENCES, MODE_PRIVATE);
+                                SharedPreferences.Editor editor = userData.edit();
+                                editor.putBoolean(LoginUser.APP_PREFERENCES_CHECKBOX_CHECKED, false);
+                                editor.apply();
+                                editor.remove(LoginUser.APP_PREFERENCES_OWN_LOGIN);
+                                editor.apply();
+                                editor.remove(LoginUser.APP_PREFERENCES_OWN_PASSWORD);
+                                editor.apply();
+                            }
+                        }.run();
+                    }
+
+                    Intent intent = new Intent(LoginUser.this, ModerChoosingActivity.class); //TODO:ВВЕСТИ НОВУЮ АКТИВИТИ ДЛЯ МОДЕРАТОРА
+                    startActivity(intent);
                 }
-                else{
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            userData = getSharedPreferences(LoginUser.APP_PREFERENCES, MODE_PRIVATE);
-                            SharedPreferences.Editor editor = userData.edit();
-                            editor.putBoolean(LoginUser.APP_PREFERENCES_CHECKBOX_CHECKED, false);
-                            editor.apply();
-                            editor.remove(LoginUser.APP_PREFERENCES_OWN_LOGIN);
-                            editor.apply();
-                            editor.remove(LoginUser.APP_PREFERENCES_OWN_PASSWORD);
-                            editor.apply();
-                        }
-                    }.run();
-                }
-                Integer id = Integer.parseInt(sender.sendQueryToSQLgetString("SELECT [NGIEURATE].dbo.SIGNIN_DATA.ID_Of_Student FROM [NGIEURATE].dbo.SIGNIN_DATA WHERE Login = \'"+login+"\';"));
-                initializeFromSQL(id);
-                //makeSave(id);
-                Intent intent = new Intent(LoginUser.this, ProfileUser.class);
-                intent.putExtra("fio", FIO);
-                intent.putExtra("group", group_number);
-                intent.putExtra("points", points);
-                intent.putExtra("position_general", position_general);
-                intent.putExtra("position_group", position_group);
-                intent.putExtra("idAchiev", idAchiev);
-                intent.putExtra("instit_code", instit_code);
-                intent.putExtra("ownerOfAccount", true);
-                startActivity(intent);
+                else {txtNeverno.setVisibility(View.VISIBLE);}
             }
             else {
-                txtNeverno.setVisibility(View.VISIBLE);
-                editPassword.clearComposingText();
+                login = String.valueOf(editLogin.getText());
+                password = sender.sendQueryToSQLgetString("SELECT Password FROM SIGNIN_DATA WHERE Login = \'" + login + "\';");
+
+                if (String.valueOf(editPassword.getText()).equals(password)) {
+                    txtNeverno.setVisibility(View.INVISIBLE);
+                    if (checkBoxLogin.isChecked()) {
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                userData = getSharedPreferences(LoginUser.APP_PREFERENCES, MODE_PRIVATE);
+                                SharedPreferences.Editor editor = userData.edit();
+                                editor.putBoolean(LoginUser.APP_PREFERENCES_CHECKBOX_CHECKED, true);
+                                editor.apply();
+                                editor.putString(LoginUser.APP_PREFERENCES_OWN_LOGIN, String.valueOf(editLogin.getText()));
+                                editor.apply();
+                                editor.putString(LoginUser.APP_PREFERENCES_OWN_PASSWORD, String.valueOf(editPassword.getText()));
+                                editor.apply();
+                            }
+                        }.run();
+                    } else {
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                userData = getSharedPreferences(LoginUser.APP_PREFERENCES, MODE_PRIVATE);
+                                SharedPreferences.Editor editor = userData.edit();
+                                editor.putBoolean(LoginUser.APP_PREFERENCES_CHECKBOX_CHECKED, false);
+                                editor.apply();
+                                editor.remove(LoginUser.APP_PREFERENCES_OWN_LOGIN);
+                                editor.apply();
+                                editor.remove(LoginUser.APP_PREFERENCES_OWN_PASSWORD);
+                                editor.apply();
+                            }
+                        }.run();
+                    }
+                    Integer id = Integer.parseInt(sender.sendQueryToSQLgetString("SELECT [NGIEURATE].dbo.SIGNIN_DATA.ID_Of_Student FROM [NGIEURATE].dbo.SIGNIN_DATA WHERE Login = \'" + login + "\';"));
+                    initializeFromSQL(id);
+                    //makeSave(id);
+                    Intent intent = new Intent(LoginUser.this, ProfileUser.class);
+                    intent.putExtra("fio", FIO);
+                    intent.putExtra("group", group_number);
+                    intent.putExtra("points", points);
+                    intent.putExtra("position_general", position_general);
+                    intent.putExtra("position_group", position_group);
+                    intent.putExtra("idAchiev", idAchiev);
+                    intent.putExtra("instit_code", instit_code);
+                    intent.putExtra("ownerOfAccount", true);
+                    startActivity(intent);
+                } else {
+                    txtNeverno.setVisibility(View.VISIBLE);
+                    editPassword.clearComposingText();
+                }
             }
         });
 
