@@ -5,5 +5,124 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CheckReportsActivity">
+    <ScrollView
+        android:id="@+id/scrollReports"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".CheckReportsActivity">
+    <TextView
+        android:id="@+id/reportsTXT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ЖАЛОБЫ"
+        android:textSize="40dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="10dp"/>
 
+    <ImageView
+        android:id="@+id/reportedImages"
+        android:layout_width="300dp"
+        android:layout_height="400dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reportsTXT"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/images_empty"/>
+
+    <Button
+        android:id="@+id/previousReportedImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_ripped"
+        android:text="НАЗАД"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/nextReportedImage"
+        app:layout_constraintTop_toTopOf="@+id/nextReportedImage" />
+
+    <Button
+        android:id="@+id/nextReportedImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_ripped"
+        android:text="ВПЕРЕД"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reportedImages"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"/>
+
+    <Button
+        android:id="@+id/blockReported"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_ripped"
+        android:text="БЛОК"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reportedImages"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="15dp"/>
+
+    <Button
+        android:id="@+id/checkReportedInfo"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_orange_ripped"
+        android:text="ОПИСАНИЕ"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/blockReported"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="15dp"/>
+    <Button
+        android:id="@+id/denyReport"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_blue_ripped"
+        android:text="ОТКЛОНИТЬ"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkReportedInfo"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="15dp"
+        />
+
+            <ImageView
+                android:id="@+id/imageViewNgieuAtReports"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="20dp"
+                android:src="@drawable/ngieulogo"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginRight="15dp"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <TextView
+                android:id="@+id/reportedType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Пусто"
+                android:textSize="18dp"
+                app:layout_constraintBottom_toTopOf="@+id/reportedImages"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginBottom="10dp"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
+    
 </androidx.constraintlayout.widget.ConstraintLayout>

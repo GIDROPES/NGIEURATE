@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -155,7 +156,35 @@ public class ProfileUser extends AppCompatActivity {
             }
         });
 
+        sendReportBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendReportToModer(imageList.get(arrayIterator), ownImgCodes.get(arrayIterator), ownId," ");
+                Toast.makeText(ProfileUser.this,"Жалоба отправлена и будет рассмотрена в скором времени!", Toast.LENGTH_LONG);
+            }
+        });
+
     }
+
+    private void sendReportToModer(byte[] arrReportedImg, String code, int id_for_search, String description){
+            SQLSenderConnector connector = new SQLSenderConnector();
+            String type = connector.sendQueryToSQLgetString("SELECT TYPE FROM ACHIEVMENTS WHERE IMG_CODE = \'"+code+"\';");
+            Connection connection = connector.toOwnConnection();
+            try {
+                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO REPORTS VALUES (?,?,?,?,?);");
+                preparedStatement.setInt(1,id_for_search);
+                preparedStatement.setString(2,type);
+                preparedStatement.setBytes(3,arrReportedImg);
+                preparedStatement.setString(4,description);
+                preparedStatement.setString(5,code);
+                preparedStatement.execute();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+                Log.wtf("CANT SEND REPORT", throwables.getMessage());
+                Log.wtf("CANT SEND REPORT", throwables.getLocalizedMessage());
+            }
+    }
+
 
     private void getIntentInfo(){
         Intent intent = getIntent();
@@ -196,7 +225,19 @@ public class ProfileUser extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             deleteImageFromSQLandDeletePoints(codeForDelete, ownIdForUpdating);
+                            SQLSenderConnector senderConnector = new SQLSenderConnector();
+                            int current_points = Integer.parseInt(senderConnector.sendQueryToSQLgetString("SELECT ALL_POINTS FROM STUDENT_DATA WHERE ACHIEVMENTS_ID = \'"+ownId+"\';"));
+                            int position_general = Integer.parseInt(senderConnector.sendQueryToSQLgetString("SELECT RATE FROM(" +
+                                    "SELECT *, ROW_NUMBER() OVER (ORDER BY ALL_POINTS DESC) AS RATE FROM STUDENT_DATA) as RT " +
+                                    "WHERE ACHIEVMENTS_ID = " + ownId + " ;"));
                             Intent intent = new Intent(getContext(), ProfileUser.class);
+                            intent.putExtra("fio", fio);
+                            intent.putExtra("group", grNum);
+                            intent.putExtra("points", current_points);
+                            intent.putExtra("position_general", position_general);
+                            intent.putExtra("idAchiev", ownId);
+                            intent.putExtra("instit_code", instit_code);
+                            intent.putExtra("ownerOfAccount", true);
                             startActivity(intent);
                         }
                     });
