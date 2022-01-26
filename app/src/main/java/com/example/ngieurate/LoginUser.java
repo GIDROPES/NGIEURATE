@@ -71,7 +71,7 @@ public class LoginUser extends AppCompatActivity {
         editPassword = (EditText) findViewById(R.id.EditPassword);
         checkBoxLogin = findViewById(R.id.checkBoxLogin);
         checkBoxModerator = findViewById(R.id.checkBoxModerator);
-        
+
         userData = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
         boolean isChecked = userData.getBoolean(APP_PREFERENCES_CHECKBOX_CHECKED, false);
         String savedLogin = userData.getString(APP_PREFERENCES_OWN_LOGIN,"");

@@ -25,4 +25,9 @@
         <item>Грамота</item>
         <item>Диплом</item>
     </string-array>
+    <string-array name="institutions">
+        <item>ИЭИУ</item>
+        <item>ИТИСС</item>
+        <item>ИНЖЕНЕР</item>
+    </string-array>
 </resources>

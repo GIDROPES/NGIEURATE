@@ -21,6 +21,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
         <activity
+            android:name=".AddPointsActivity"
+            android:exported="true" />
+        <activity
+            android:name=".CheckReportsActivity"
+            android:exported="true" />
+        <activity
+            android:name=".RegistrationActivity"
+            android:exported="true" />
+        <activity
             android:name=".ModerChoosingActivity"
             android:exported="true" />
         <activity

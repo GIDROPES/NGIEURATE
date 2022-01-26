@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegistrationActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0.8"
+        android:text="РЕГИСТРАЦИЯ СТУДЕНТА"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="30dp"/>
+
+    <TextView
+        android:id="@+id/createLoginTXT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Придумайте логин: "
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="170dp"
+        android:layout_marginStart="30dp"/>
+
+    <TextView
+        android:id="@+id/createPasswordTXT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Придумайте пароль: "
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/createLoginTXT"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="170dp"
+        android:layout_marginStart="30dp"/>
+
+    <EditText
+        android:id="@+id/editRegistrationLogin"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createLoginTXT"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:hint="Логин"
+        android:textSize="15dp"/>
+
+    <EditText
+        android:id="@+id/editRegistrationPassword"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/createPasswordTXT"
+        app:layout_constraintTop_toBottomOf="@+id/createPasswordTXT"
+        android:layout_marginTop="10dp"
+        android:hint="Пароль"
+        android:textSize="15dp"
+        android:inputType="textPassword"/>
+
+    <TextView
+        android:id="@+id/registerFIOTXT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ФИО (Иванов Иван Иванович)"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editRegistrationLogin"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="40dp"/>
+
+    <EditText
+        android:id="@+id/editRegistrationFIO"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/registerFIOTXT"
+        app:layout_constraintTop_toBottomOf="@+id/registerFIOTXT"
+        android:layout_marginTop="10dp"
+        android:hint="ФИО"
+        android:textSize="15dp"
+        />
+
+    <TextView
+        android:id="@+id/registerGroupTXT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Группа (22-АА)"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/registerFIOTXT"
+        app:layout_constraintTop_toBottomOf="@+id/editRegistrationPassword"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="40dp"/>
+    <EditText
+        android:id="@+id/editRegistrationGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/registerGroupTXT"
+        app:layout_constraintTop_toBottomOf="@+id/registerGroupTXT"
+        android:layout_marginTop="10dp"
+        android:hint="Без пробелов"
+        android:textSize="15dp"
+        />
+    <TextView
+        android:id="@+id/registerInstitutionTXT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Выберите институт:"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/editRegistrationFIO"
+        app:layout_constraintTop_toBottomOf="@+id/editRegistrationFIO"
+        android:layout_marginTop="30dp"/>
+
+    <Spinner
+        android:id="@+id/registrationSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button_orange_ripped"
+        android:entries="@array/institutions"
+        app:layout_constraintStart_toStartOf="@+id/editRegistrationGroup"
+        app:layout_constraintTop_toBottomOf="@+id/editRegistrationGroup" />
+
+    <Button
+        android:id="@+id/acceptRegistration"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registerInstitutionTXT"
+        android:layout_marginTop="70dp"
+        android:background="@drawable/button_blue_ripped"
+        android:text="ЗАРЕГИСТРИРОВАТЬ"
+        android:textColor="@color/white"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

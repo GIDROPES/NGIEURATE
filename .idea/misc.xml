@@ -3,13 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/drawable/button_blue_ripped.xml" value="0.2916666666666667" />
         <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/drawable/button_orange_ripped.xml" value="0.2916666666666667" />
         <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/drawable/button_ripped.xml" value="0.4" />
+        <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_add_points.xml" value="0.26197916666666665" />
         <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_camera.xml" value="0.264" />
         <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_login_user.xml" value="0.264" />
         <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_main2.xml" value="0.1" />
         <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_moder_choosing.xml" value="0.2755208333333333" />
         <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_profile_user.xml" value="0.1" />
+        <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_registration.xml" value="0.2755208333333333" />
         <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_show_table.xml" value="0.264" />
         <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_students_list.xml" value="0.24375" />
         <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/gridview_layout.xml" value="0.2328125" />
