@@ -6,4 +6,137 @@
     android:layout_height="match_parent"
     tools:context=".AddPointsActivity">
 
+    <TextView
+        android:id="@+id/addPointsTeacherTXT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ДОБАВИТЬ БАЛЛЫ"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/fioStudentGroptStudentTXTADDPOINTS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="40dp"
+        android:text="ФИО СТУДЕНТА И НОМЕР ГРУППЫ:"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addPointsTeacherTXT" />
+
+    <EditText
+        android:id="@+id/studentEditTextAddPoints"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:hint="Студент"
+        android:textSize="14dp"
+        app:layout_constraintStart_toStartOf="@+id/fioStudentGroptStudentTXTADDPOINTS"
+        app:layout_constraintTop_toBottomOf="@+id/fioStudentGroptStudentTXTADDPOINTS"
+        android:layout_marginTop="10dp"/>
+
+    <EditText
+        android:id="@+id/groupEditTextAddPoints"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Группа"
+        android:textSize="14dp"
+        app:layout_constraintStart_toEndOf="@+id/studentEditTextAddPoints"
+        app:layout_constraintTop_toBottomOf="@+id/fioStudentGroptStudentTXTADDPOINTS"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="30dp"/>
+    <TextView
+        android:id="@+id/pointsToAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="БАЛЛЫ:"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/studentEditTextAddPoints" />
+
+    <EditText
+        android:id="@+id/pointsAddEditText"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:hint="Баллы"
+        android:textSize="14dp"
+        app:layout_constraintStart_toStartOf="@+id/fioStudentGroptStudentTXTADDPOINTS"
+        app:layout_constraintTop_toBottomOf="@+id/pointsToAdd"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:id="@+id/teacherFIO"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="ФИО ПРЕПОДАВАТЕЛЯ:"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pointsAddEditText" />
+
+    <EditText
+        android:id="@+id/teacherEditTextAddPoints"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:hint="Преподаватель:"
+        android:textSize="14dp"
+        app:layout_constraintStart_toStartOf="@+id/fioStudentGroptStudentTXTADDPOINTS"
+        app:layout_constraintTop_toBottomOf="@+id/teacherFIO"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:id="@+id/descriptionPointsTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="ОПИСАНИЕ:"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/teacherEditTextAddPoints" />
+
+    <EditText
+        android:id="@+id/descriptionPointsEditText"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:hint="За что баллы?"
+        android:textSize="14dp"
+        app:layout_constraintStart_toStartOf="@+id/fioStudentGroptStudentTXTADDPOINTS"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionPointsTxt"
+        android:layout_marginTop="10dp"/>
+
+    <Button
+        android:id="@+id/addPointsBtn"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_blue_ripped"
+        android:text="ДОБАВИТЬ БАЛЛОВ"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionPointsEditText"
+        android:layout_marginTop="50dp"/>
+
+    <ImageView
+        android:id="@+id/imageViewNgieuAtPointsAdder"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/ngieulogo"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
