@@ -103,7 +103,7 @@ public class SQLSenderConnector {
         if (connection != null) {
             try {
                 Statement statement = connection.createStatement();
-                statement.executeQuery(query);
+                statement.execute(query);
 
             } catch (SQLException throwables) {
                 Log.d("CnctrSndrErr :", throwables.getMessage());
