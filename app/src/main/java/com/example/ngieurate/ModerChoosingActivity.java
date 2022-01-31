@@ -15,7 +15,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class ModerChoosingActivity extends AppCompatActivity {
-    Button checkReports, registrationStudent,  addPointsStudent, clearAllRatingBtn;
+    Button checkReports, registrationStudent, addPointsStudent, clearAllRatingBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +25,7 @@ public class ModerChoosingActivity extends AppCompatActivity {
         checkReports = findViewById(R.id.moderCheckReports);
         registrationStudent = findViewById(R.id.moderRegistration);
         addPointsStudent = findViewById(R.id.moderAddPoints);
-        clearAllRatingBtn= findViewById(R.id.clearAllRating);
+        clearAllRatingBtn = findViewById(R.id.clearAllRating);
 
         registrationStudent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,7 +54,7 @@ public class ModerChoosingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 AskClearAllRating askClearAllRating = new AskClearAllRating();
-                askClearAllRating.show(getSupportFragmentManager(),"askClearing");
+                askClearAllRating.show(getSupportFragmentManager(), "askClearing");
                 Toast.makeText(ModerChoosingActivity.this, "Вы только что очистили весь рейтинг студентов и их достижения", Toast.LENGTH_LONG);
             }
         });
@@ -85,4 +86,5 @@ public class ModerChoosingActivity extends AppCompatActivity {
 
             return builder.create();
         }
+    }
 }
