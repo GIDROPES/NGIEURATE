@@ -37,7 +37,7 @@ public class ProfileUser extends AppCompatActivity {
     //видно всегда
     TextView nameFio, groupNumber,
             positionOfAll,
-            allPoints;
+            allPoints, watchAchType;
     //видно не всегда
     TextView txtUpload, formatsTxtV, myAccount;
     ImageView clickToUpload;
@@ -46,12 +46,13 @@ public class ProfileUser extends AppCompatActivity {
     public static String fio, grNum, institution_str;
     public static Integer posAll, posGr, allPnts, instit_code;
     private SharedPreferences myData;
-    private Button checkRateBtn, nextBtn, prevBtn, deleteImageBtn, sendReportBtn;
+    private Button checkRateBtn, nextBtn, prevBtn, deleteImageBtn, sendReportBtn, watchTeachersPoints;
     public static Integer ownId;
     private int arrayIterator = 0;
     private ArrayList<byte[]> imageList;
     private ArrayList<String> ownImgCodes;
     private ArrayList<Integer> pointsList;
+    private  ArrayList<String> achievTypes;
     private static final int PICKFILE_RESULT_CODE = 21;
 
 
@@ -69,6 +70,7 @@ public class ProfileUser extends AppCompatActivity {
         clickToUpload =  findViewById(R.id.clickToUpload);
         deleteImageBtn = findViewById(R.id.deleteImage);
         sendReportBtn = findViewById(R.id.sendReportBTN);
+        watchTeachersPoints = findViewById(R.id.watchTeachersPoints);
         images = findViewById(R.id.images);
         //сопоставляем текстовые штуки
         nameFio = findViewById(R.id.nameFio);
@@ -78,6 +80,7 @@ public class ProfileUser extends AppCompatActivity {
         txtUpload = findViewById(R.id.txtUpload);
         formatsTxtV = findViewById(R.id.formatsTxtV);
         myAccount = findViewById(R.id.myAccountTXT);
+        watchAchType = findViewById(R.id.txtWatchMyAch);
         //действия
         clickToUpload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,15 +123,18 @@ public class ProfileUser extends AppCompatActivity {
         imageList = fillArrayImages(ownId);
         ownImgCodes = getImageCodes(ownId);
         pointsList = getPointsImage(ownId);
+        achievTypes = getTypesImage(ownId);
 
         if(!imageList.isEmpty()) {
             byte[] temporaryArrayBytes = imageList.get(0);
             Bitmap achievBitmap = BitmapFactory.decodeByteArray(temporaryArrayBytes, 0, temporaryArrayBytes.length);
             images.setImageBitmap(achievBitmap);
+            watchAchType.setText(achievTypes.get(arrayIterator) + ": " + pointsList.get(arrayIterator));
         }
         else {
             images.setImageResource(R.drawable.images_empty);
             sendReportBtn.setClickable(false); sendReportBtn.setAlpha(0.4f);
+            watchAchType.setText("Пусто");
         }
 
         nextBtn.setOnClickListener(new View.OnClickListener() {
@@ -161,6 +167,16 @@ public class ProfileUser extends AppCompatActivity {
             public void onClick(View view) {
                 sendReportToModer(imageList.get(arrayIterator), ownImgCodes.get(arrayIterator), ownId," ");
                 Toast.makeText(ProfileUser.this,"Жалоба отправлена и будет рассмотрена в скором времени!", Toast.LENGTH_LONG);
+            }
+        });
+
+        watchTeachersPoints.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentToTeachers = new Intent(ProfileUser.this, TeachersAchievmentsActivity.class);
+                intentToTeachers.putExtra("idAchiev", ownId);
+                intentToTeachers.putExtra("fio", fio);
+                startActivity(intentToTeachers);
             }
         });
 
@@ -362,9 +378,11 @@ public class ProfileUser extends AppCompatActivity {
             if(arrayIterator == imageList.size()){
                 arrayIterator = 0;
                 showThisImage(arrayIterator);
+                watchAchType.setText(achievTypes.get(arrayIterator) + ": " + pointsList.get(arrayIterator));
             }
             else {
                 showThisImage(arrayIterator);
+                watchAchType.setText(achievTypes.get(arrayIterator) + ": " + pointsList.get(arrayIterator));
             }
         }
 
@@ -372,9 +390,12 @@ public class ProfileUser extends AppCompatActivity {
             if (arrayIterator == 0) {
                 arrayIterator = imageList.size()-1;
                 showThisImage(arrayIterator);
+                watchAchType.setText(achievTypes.get(arrayIterator) + ": " + pointsList.get(arrayIterator));
+
             } else {
                 arrayIterator--;
                 showThisImage(arrayIterator);
+                watchAchType.setText(achievTypes.get(arrayIterator) + ": " + pointsList.get(arrayIterator));
             }
         }
 
@@ -401,7 +422,7 @@ public class ProfileUser extends AppCompatActivity {
         }
         return tempArr;
     }
-    protected ArrayList<String> getImageCodes(int idForSearchingCodes){
+    private ArrayList<String> getImageCodes(int idForSearchingCodes){
         ArrayList<String> gottenCodes = new ArrayList<>();
         SQLSenderConnector connector = new SQLSenderConnector();
         Connection connection = connector.toOwnConnection();
@@ -427,6 +448,23 @@ public class ProfileUser extends AppCompatActivity {
             ResultSet resultSet = statement.executeQuery("SELECT POINTS FROM ACHIEVMENTS WHERE OWN_ID_FOR_SEARCH = "+idForSearchPoints+";");
             while (resultSet.next()){
                 tempArr.add(resultSet.getInt(1));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            Log.wtf("Cant get IMG POINTS SQL", throwables.getMessage());
+            Log.wtf("Cant get IMG POINTS SQL", throwables.getLocalizedMessage());
+        }
+        return tempArr;
+    }
+    private ArrayList<String> getTypesImage(int idForSearchPoints){
+        ArrayList<String> tempArr = new ArrayList<>();
+        SQLSenderConnector connector = new SQLSenderConnector();
+        Connection connection = connector.toOwnConnection();
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT TYPE FROM ACHIEVMENTS WHERE OWN_ID_FOR_SEARCH = "+idForSearchPoints+";");
+            while (resultSet.next()){
+                tempArr.add(resultSet.getString(1));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();

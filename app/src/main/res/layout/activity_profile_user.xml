@@ -116,9 +116,9 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="10dp"
                             android:text="Поддерживаемые форматы: "
+                            android:textAlignment="center"
                             android:textColor="@color/black"
-                            android:textSize="14dp"
-                            android:textAlignment="center"/>
+                            android:textSize="14dp" />
 
                         <TextView
                             android:id="@+id/txtWatchMyAch"
@@ -134,11 +134,10 @@
                         <ImageView
                             android:id="@+id/images"
                             android:layout_width="300dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="400dp"
                             android:layout_below="@id/txtWatchMyAch"
                             android:layout_centerHorizontal="true"
-                            android:layout_marginTop="30dp"
-                             />
+                            android:layout_marginTop="30dp" />
 
                         <Button
                             android:id="@+id/previousImage"
@@ -167,7 +166,7 @@
                             android:textStyle="bold" />
 
                         <Button
-                            android:id="@+id/watchAsList"
+                            android:id="@+id/watchTeachersPoints"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/nextImage"
@@ -175,10 +174,9 @@
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="10dp"
                             android:background="@drawable/button_ripped"
-                            android:text="Посмотреть списком"
+                            android:text="Баллы от преподавателей"
                             android:textColor="@color/white"
-                            android:textStyle="bold"
-                            android:visibility="invisible" />
+                            android:textStyle="bold" />
 
                         <Button
                             android:id="@+id/deleteImage"
@@ -192,17 +190,17 @@
                             android:text="x"
                             android:textColor="@color/white"
                             android:textStyle="bold" />
+
                         <ImageView
                             android:id="@+id/imageViewNgieuAtLoginPanel"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
+                            android:layout_below="@id/watchTeachersPoints"
                             android:layout_alignParentBottom="true"
                             android:layout_centerHorizontal="true"
-                            android:layout_below="@id/watchAsList"
                             android:layout_marginTop="20dp"
                             android:layout_marginBottom="10dp"
-                            android:src="@drawable/ngieulogo"
-                             />
+                            android:src="@drawable/ngieulogo" />
 
                         <TextView
                             android:id="@+id/allPoints"

@@ -13,11 +13,13 @@
         <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_main2.xml" value="0.1" />
         <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_moder_choosing.xml" value="0.2755208333333333" />
-        <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_profile_user.xml" value="0.4" />
+        <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_profile_user.xml" value="0.36380255941499084" />
         <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_registration.xml" value="0.2755208333333333" />
         <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_show_table.xml" value="0.264" />
         <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_students_list.xml" value="0.24375" />
+        <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/activity_teachers_achievments.xml" value="0.176" />
         <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/gridview_layout.xml" value="0.2328125" />
+        <entry key="..\:/androidProjects/NGIEURATE/app/src/main/res/layout/teachers_gridview.xml" value="0.21927083333333333" />
       </map>
     </option>
   </component>
